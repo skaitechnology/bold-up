@@ -105,7 +105,7 @@ export default async function ProAgendaPage({ searchParams }: { searchParams: Pr
                   )}
                 >
                   <h2 className="flex items-baseline justify-between gap-2 lg:block">
-                    <span className={clsx("text-[13px] font-semibold capitalize", isToday ? "text-ink" : "text-muted")}>{formatDateKey(key, locale, "short")}</span>
+                    <span className={clsx("inline-block text-[13px] font-semibold capitalize-first", isToday ? "text-ink" : "text-muted")}>{formatDateKey(key, locale, "short")}</span>
                     {off ? (
                       <span className="inline-flex items-center gap-1 text-[12px] text-warn lg:mt-1 lg:flex">
                         <CalendarOff size={12} aria-hidden />
@@ -194,7 +194,7 @@ export default async function ProAgendaPage({ searchParams }: { searchParams: Pr
                   <li key={item.id} className="flex items-center gap-3 rounded-2xl border border-line px-4 py-3" data-testid="day-off">
                     <CalendarOff size={18} aria-hidden className="shrink-0 text-muted" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[14.5px] font-medium capitalize text-ink">
+                      <p className="text-[14.5px] font-medium capitalize-first text-ink">
                         {formatDateKey(item.starts_on, locale)}
                         {item.ends_on !== item.starts_on ? ` → ${formatDateKey(item.ends_on, locale)}` : ""}
                       </p>

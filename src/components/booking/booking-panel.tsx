@@ -266,7 +266,7 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
                           : "border-transparent bg-sand text-faint",
                     )}
                   >
-                    <span className="text-[11px] font-medium capitalize">{dayLabel(key).replace(".", "")}</span>
+                    <span className="text-[11px] font-medium capitalize-first">{dayLabel(key).replace(".", "")}</span>
                     <span className="mt-0.5 text-[18px] font-semibold tabular">{Number(key.slice(8))}</span>
                   </button>
                 );
@@ -346,7 +346,7 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
             <p className="text-[14.5px] font-semibold text-ink">
               {service?.name} · {formatDuration(duration)}
             </p>
-            <p className="mt-0.5 text-[14px] capitalize text-ink2">
+            <p className="mt-0.5 text-[14px] capitalize-first text-ink2">
               {formatDayLong(startsAt, locale)} {t.common.at} {formatTime(startsAt, locale)}
             </p>
             <p className="mt-2 flex items-start gap-1.5 text-[12.5px] leading-snug text-muted">

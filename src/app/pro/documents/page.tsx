@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Check, ChevronRight, CircleAlert, Clock, ExternalLink, FileText, LoaderCircle, Lock, ScanSearch, ShieldCheck, Upload, UserRoundCheck } from "lucide-react";
+import { Check, ChevronRight, CircleAlert, Clock, ExternalLink, FileText, LoaderCircle, ScanSearch, ShieldCheck, Upload, UserRoundCheck } from "lucide-react";
 import { SubmitProfileButton } from "@/components/pro/dashboard-actions";
 import { DeleteButton } from "@/components/pro/delete-button";
 import { DocumentUpload } from "@/components/pro/document-upload";
@@ -61,7 +61,7 @@ export default async function ProDocumentsPage() {
     const type = types.find((item) => item.code === code);
     return type ? localizedName(type, locale) : code;
   };
-  const stepLabels = [d.steps.received, d.steps.precheck, d.steps.prechecked, d.steps.approved];
+  const stepLabels = [d.track.received, d.track.precheck, d.track.review, d.track.approved];
 
   return (
     <div className="space-y-6">
@@ -90,10 +90,6 @@ export default async function ProDocumentsPage() {
             </li>
           ))}
         </ol>
-        <p className="mt-5 flex items-center gap-2 text-[12.5px] text-faint">
-          <Lock size={13} aria-hidden />
-          {d.text}
-        </p>
       </Card>
 
       {/* one block per document type */}

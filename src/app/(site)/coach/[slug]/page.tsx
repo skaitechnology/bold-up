@@ -100,7 +100,9 @@ export default async function CoachProfilePage({ params, searchParams }: PagePro
   ];
   const workingDays = [...new Set(coach.availability_rules.map((rule) => rule.weekday))].sort();
   const weekdayName = (isoDay: number) =>
-    new Intl.DateTimeFormat(intlLocale(locale), { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2024, 0, isoDay))).replace(".", "");
+    new Intl.DateTimeFormat(intlLocale(locale), { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2024, 0, isoDay)))
+      .replace(".", "")
+      .replace(/^./, (letter) => letter.toUpperCase());
 
   const panel = {
     coach: { id: coach.id, slug: coach.slug, displayName: coach.display_name, acceptingBookings: coach.accepting_bookings },
@@ -341,8 +343,8 @@ export default async function CoachProfilePage({ params, searchParams }: PagePro
                       key={day}
                       className={
                         on
-                          ? "inline-flex h-11 w-14 items-center justify-center rounded-2xl bg-ink text-[13.5px] font-semibold capitalize text-paper"
-                          : "inline-flex h-11 w-14 items-center justify-center rounded-2xl bg-sand text-[13.5px] capitalize text-faint line-through"
+                          ? "inline-flex h-11 w-14 items-center justify-center rounded-2xl bg-ink text-[13.5px] font-semibold text-paper"
+                          : "inline-flex h-11 w-14 items-center justify-center rounded-2xl bg-sand text-[13.5px] text-faint line-through"
                       }
                     >
                       {weekdayName(day)}

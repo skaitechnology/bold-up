@@ -233,7 +233,7 @@ export default async function ProDashboardPage() {
                   <li key={booking.id} className="flex items-center gap-4 border-t border-line px-5 py-4 first:border-t-0">
                     <div className="w-[92px] shrink-0">
                       <p className="text-[16px] font-semibold tabular text-ink">{formatTime(booking.starts_at, locale)}</p>
-                      <p className="text-[12.5px] capitalize text-muted">{formatDayShort(booking.starts_at, locale)}</p>
+                      <p className="text-[12.5px] capitalize-first text-muted">{formatDayShort(booking.starts_at, locale)}</p>
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[15px] font-medium text-ink">{booking.customer.name}</p>

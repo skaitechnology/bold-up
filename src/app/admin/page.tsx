@@ -17,6 +17,24 @@ export default async function AdminDashboardPage() {
     listVenuesAdmin(),
   ]);
   const d = t.admin.dashboard;
+  const ACTIVITY: Record<string, keyof typeof d.activity> = {
+    "coach.approve": "coachApprove",
+    "coach.reject": "coachReject",
+    "coach.request_changes": "coachRequestChanges",
+    "coach.suspend": "coachSuspend",
+    "coach.reinstate": "coachReinstate",
+    "coach.publish": "coachPublish",
+    "coach.unpublish": "coachUnpublish",
+    "document.approve": "documentApprove",
+    "document.reject": "documentReject",
+    "document.request_info": "documentRequestInfo",
+    "qualification.verified": "qualificationVerified",
+    "qualification.declared": "qualificationDeclared",
+    "user.suspend": "userSuspend",
+    "user.reinstate": "userReinstate",
+    "account.deletion_requested": "deletionRequested",
+  };
+  const activityLabel = (action: string) => d.activity[ACTIVITY[action] ?? "other"];
   const tiles: { label: string; value: number; icon: LucideIcon; href: string; accent?: boolean }[] = [
     { label: d.stats.pending, value: stats.coachesPending, icon: Hourglass, href: "/admin/coachs?statut=awaiting_review", accent: stats.coachesPending > 0 },
     { label: d.stats.documents, value: stats.documentsToReview, icon: FileSearch, href: "/admin/coachs?statut=awaiting_review" },
@@ -91,9 +109,7 @@ export default async function AdminDashboardPage() {
                   <li key={entry.id} className="flex gap-3 text-[14px]">
                     <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gold" />
                     <div className="min-w-0">
-                      <p className="font-medium text-ink">
-                        <code className="rounded bg-sand px-1.5 py-0.5 text-[12.5px]">{entry.action}</code>
-                      </p>
+                      <p className="font-medium text-ink">{activityLabel(entry.action)}</p>
                       <p className="text-[12px] text-faint">{formatDateTimeCompact(entry.created_at, locale)}</p>
                     </div>
                   </li>

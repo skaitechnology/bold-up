@@ -61,7 +61,7 @@ export function AvailabilityEditor({ initial }: { initial: { weekday: number; st
           return (
             <li key={day} className="flex flex-col gap-3 py-4 md:flex-row md:items-start md:gap-6" data-day={day}>
               <div className="flex items-center justify-between md:w-36 md:pt-2.5">
-                <span className="text-[15px] font-semibold capitalize text-ink">{dayName(day)}</span>
+                <span className="text-[15px] font-semibold capitalize-first text-ink">{dayName(day)}</span>
                 {ranges.length === 0 ? <span className="text-[13.5px] text-faint md:hidden">{a.closed}</span> : null}
               </div>
               <div className="flex-1 space-y-2">

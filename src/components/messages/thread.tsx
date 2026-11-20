@@ -90,7 +90,7 @@ export function Thread({ conversationId, userId, initial }: { conversationId: st
             const mine = message.sender_id === userId;
             return (
               <li key={message.id}>
-                {showDay ? <p className="my-4 text-center text-[12px] capitalize text-faint">{formatDayLong(message.created_at, locale)}</p> : null}
+                {showDay ? <p className="my-4 text-center text-[12px] capitalize-first text-faint">{formatDayLong(message.created_at, locale)}</p> : null}
                 <div className={clsx("flex", mine ? "justify-end" : "justify-start")}>
                   <div
                     className={clsx(
