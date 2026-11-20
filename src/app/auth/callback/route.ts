@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { homeFor, safeNext } from "@/lib/auth/session";
+import { isSupabaseConfigured } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -15,6 +16,7 @@ export async function GET(request: NextRequest) {
   const next = safeNext(searchParams.get("next"));
   const wantsCoach = searchParams.get("role") === "coach";
 
+  if (!isSupabaseConfigured) return NextResponse.redirect(`${origin}/connexion?erreur=lien`);
   const supabase = await createClient();
   let failed = true;
   if (code) {

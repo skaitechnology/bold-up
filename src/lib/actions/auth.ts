@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { homeFor, safeNext } from "@/lib/auth/session";
-import { siteUrl } from "@/lib/env";
+import { isSupabaseConfigured, siteUrl } from "@/lib/env";
 import type { ErrorCode } from "@/lib/errors";
 import { getLocale } from "@/lib/i18n/server";
 import { allow, clientIp } from "@/lib/rate-limit";
@@ -45,6 +45,7 @@ export async function signUpAction(_prev: AuthFormState, formData: FormData): Pr
     password: formData.get("password"),
   };
   const values = { fullName: String(raw.fullName ?? ""), email: raw.email };
+  if (!isSupabaseConfigured) return { error: "not_configured", values };
   const parsed = signUpSchema.safeParse(raw);
   if (!parsed.success) {
     const weak = parsed.error.issues.some((issue) => issue.path[0] === "password");
@@ -86,6 +87,7 @@ export async function signInAction(_prev: AuthFormState, formData: FormData): Pr
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   const values = { email };
+  if (!isSupabaseConfigured) return { error: "not_configured", values };
   if (!emailSchema.safeParse(email).success || password.length === 0) return { error: "invalid_credentials", values };
 
   if (!(await allow(`login:${await clientIp()}`, 20, 600))) return { error: "rate_limited", values };
@@ -113,6 +115,7 @@ export async function signOutAction() {
 /** Passwordless sign-in for existing accounts. Always answers the same, whether or not the address exists. */
 export async function magicLinkAction(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!isSupabaseConfigured) return { error: "not_configured", values: { email } };
   if (!emailSchema.safeParse(email).success) return { error: "invalid_input", values: { email } };
   if (!(await allow(`magic:${await clientIp()}`, 5, 900))) return { error: "rate_limited", values: { email } };
 
@@ -130,6 +133,7 @@ export async function magicLinkAction(_prev: AuthFormState, formData: FormData):
 
 export async function forgotPasswordAction(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!isSupabaseConfigured) return { error: "not_configured", values: { email } };
   if (!emailSchema.safeParse(email).success) return { error: "invalid_input", values: { email } };
   if (!(await allow(`reset:${await clientIp()}`, 5, 900))) return { error: "rate_limited", values: { email } };
 
