@@ -1,0 +1,25 @@
+# dependencies
+node_modules
+
+# next
+.next
+.next-e2e
+next-env.d.ts
+*.tsbuildinfo
+
+# env and secrets (never commit real values)
+.env*
+!.env.example
+.vercel
+
+# generated demo credentials (written by `npm run db:seed`)
+.demo-credentials.*
+
+# tests
+playwright-report
+test-results
+tests/e2e/.auth
+
+# misc
+.DS_Store
+*.log
