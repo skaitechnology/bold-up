@@ -52,6 +52,8 @@ Two levels, never merged:
 
 The public "Vérifié" badge exists only when an administrator has approved the profile **and** every required document is approved. If a required document is deleted or expires, the approval is withdrawn automatically until a new one is reviewed.
 
+The official pages on sports.gouv.fr could not be read while this version was built (the site answered 503), so the regulatory wording in the product comes from general knowledge of the French rules and has not been checked line by line against the official text. It must be reviewed before launch.
+
 Required documents are platform policy, editable by the admin (default: professional sports educator card and professional liability insurance; diploma, business registration and others are optional). They are not a statement that the law requires the same in every case: a diploma does not authorise every discipline, and the admin screen says so.
 
 ## Deliberately not in this version
