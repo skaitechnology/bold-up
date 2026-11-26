@@ -23,7 +23,9 @@ if (!url) {
 const host = new URL(url).host;
 console.log(`Applying migrations to ${host}…`);
 
-// The connection string carries a password: pass it through the environment-free argv of
-// a child process and never print it.
-const result = spawnSync("npx", ["supabase", "db", "push", "--db-url", url, "--include-all"], { cwd: root, stdio: "inherit" });
+// The Supabase CLI refuses to change a hosted database without an explicit confirmation.
+// Pass `-- --yes` once you have checked the target above: `npm run db:push -- --yes`.
+const confirmed = process.argv.includes("--yes");
+// The connection string carries a password: it goes straight to the child process and is never printed.
+const result = spawnSync("npx", ["supabase", "db", "push", "--db-url", url, "--include-all", ...(confirmed ? ["--yes"] : [])], { cwd: root, stdio: "inherit" });
 process.exit(result.status ?? 1);

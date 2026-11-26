@@ -35,7 +35,7 @@ echo "3/6 Pull production variables (kept local, git-ignored)"
 vercel env pull "$ENV_FILE" --environment=production --yes
 
 echo "4/6 Migrations"
-ENV_FILE="$ENV_FILE" npm run db:push
+ENV_FILE="$ENV_FILE" npm run db:push -- --yes
 
 echo "5/6 Demo data and accounts"
 ENV_FILE="$ENV_FILE" npm run db:seed -- --allow-remote
