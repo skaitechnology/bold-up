@@ -10,13 +10,13 @@ export async function SiteFooter() {
   const linkClass = "text-[14px] text-white/70 hover:text-white";
 
   return (
-    <footer className="on-dark bg-ink text-paper">
+    <footer className="on-dark bg-night text-paper">
       <div className="mx-auto max-w-[1320px] px-4 pb-28 pt-14 md:px-8 md:pb-12 md:pt-16">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Logo inverse size="lg" />
             <p className="mt-5 max-w-sm text-[14.5px] leading-relaxed text-white/70">{f.about}</p>
-            <p className="mt-2 text-[13.5px] text-gold">{f.launch}</p>
+            <p className="mt-2 text-[13.5px] font-medium text-volt">{f.launch}</p>
           </div>
           <div>
             <p className="eyebrow text-white/50">{f.explore}</p>
@@ -24,6 +24,26 @@ export async function SiteFooter() {
               <li>
                 <Link href="/coachs" className={linkClass}>
                   {nav.findCoach}
+                </Link>
+              </li>
+              <li>
+                <Link href="/carte" className={linkClass}>
+                  {nav.map}
+                </Link>
+              </li>
+              <li>
+                <Link href="/clubs" className={linkClass}>
+                  {nav.clubs}
+                </Link>
+              </li>
+              <li>
+                <Link href="/street-workout" className={linkClass}>
+                  {nav.streetWorkout}
+                </Link>
+              </li>
+              <li>
+                <Link href="/evenements" className={linkClass}>
+                  {nav.events}
                 </Link>
               </li>
               <li>

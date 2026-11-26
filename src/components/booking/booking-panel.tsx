@@ -5,13 +5,13 @@ import { clsx } from "clsx";
 import { CalendarCheck, Check, Clock, Info, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { SlotPicker } from "@/components/calendar/slot-picker";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/field";
 import { getOpenSlotsAction, requestBookingAction } from "@/lib/actions/bookings";
 import type { LocationKind } from "@/lib/domain";
-import { addDaysToKey, formatDateKey, formatDayLong, formatDuration, formatPrice, formatTime, parisDateKey } from "@/lib/format";
+import { formatDayLong, formatDuration, formatPrice, formatTime, parisDateKey } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/client";
-import { intlLocale } from "@/lib/i18n/config";
 
 export type BookableService = { id: string; name: string; description: string; duration_min: number; price_cents: number };
 
@@ -28,11 +28,25 @@ type Props = {
 
 type Draft = { serviceId: string; startsAt: string | null; location: LocationKind; message: string };
 
-const DAYS_SHOWN = 21;
+/** Step marker: its number, then a tick once the step is answered. */
+function Step({ index, done }: { index: number; done: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={clsx(
+        "inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold tabular transition-colors duration-300",
+        done ? "bg-bold text-white" : "bg-sand2 text-ink2",
+      )}
+    >
+      {done ? <Check size={12} strokeWidth={3} /> : index}
+    </span>
+  );
+}
 
 /**
- * The whole booking request, in one panel: service, day, time, place, message.
- * Slots come from the database and the request is stored there; nothing is simulated.
+ * The whole booking request, in one panel: service, day and time (by day, week or month),
+ * place, message. Slots come from the database and the request is stored there; nothing
+ * is simulated.
  */
 export function BookingPanel({ coach, services, locations, signedIn, isOwn, bookable, initialServiceId }: Props) {
   const { t, locale } = useI18n();
@@ -106,24 +120,13 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coach.id, duration, serviceId, bookable]);
 
-  const byDay = useMemo(() => {
-    const map = new Map<string, string[]>();
-    for (const slot of slots ?? []) {
-      const key = parisDateKey(slot);
-      map.set(key, [...(map.get(key) ?? []), slot]);
-    }
-    return map;
-  }, [slots]);
-
-  const days = useMemo(() => {
-    const today = parisDateKey(new Date());
-    return Array.from({ length: DAYS_SHOWN }, (_, index) => addDaysToKey(today, index));
-  }, []);
+  // Today as seen from Paris, whatever the device's own time zone.
+  const today = useMemo(() => parisDateKey(new Date()), []);
 
   if (sent) {
     return (
       <div className="flex flex-col items-center px-2 py-6 text-center" data-testid="booking-sent">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-ink text-paper">
+        <span className="animate-pop flex h-16 w-16 items-center justify-center rounded-full bg-bold text-white shadow-glow">
           <Check size={28} aria-hidden />
         </span>
         <h3 className="display mt-5 text-[24px] text-ink">{b.sentTitle}</h3>
@@ -179,27 +182,24 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
     });
   };
 
-  const today = days[0];
-  const dayLabel = (key: string) => {
-    if (key === today) return b.today;
-    if (key === days[1]) return b.tomorrow;
-    return new Intl.DateTimeFormat(intlLocale(locale), { weekday: "short", timeZone: "UTC" }).format(new Date(`${key}T12:00:00Z`));
-  };
-  const times = day ? (byDay.get(day) ?? []) : [];
-
   return (
-    <div className="space-y-6" data-testid="booking-panel">
+    // On desktop the panel lives in a sticky column: it scrolls on its own so that nothing,
+    // and above all the request button, ends up below the fold.
+    <div className="space-y-6 lg:-mx-2 lg:max-h-[calc(100dvh-212px)] lg:overflow-y-auto lg:px-2" data-testid="booking-panel">
       {/* 1 — service */}
       <fieldset>
-        <legend className="mb-2.5 text-[13px] font-semibold text-ink">{b.chooseService}</legend>
-        <div className="space-y-2">
+        <legend className="mb-2.5 flex items-center gap-2 text-[13px] font-semibold text-ink">
+          <Step index={1} done={Boolean(service)} />
+          {b.chooseService}
+        </legend>
+        <div className="space-y-1.5">
           {services.map((item) => {
             const active = item.id === service?.id;
             return (
               <label
                 key={item.id}
                 className={clsx(
-                  "press flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 transition",
+                  "press flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-2.5 transition",
                   active ? "border-ink bg-ink text-paper" : "border-line2 bg-paper hover:border-ink",
                 )}
               >
@@ -212,10 +212,10 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
                   className="sr-only"
                   data-testid="service-option"
                 />
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[14.5px] font-semibold">{item.name}</span>
-                  <span className={clsx("mt-0.5 flex items-center gap-1.5 text-[12.5px]", active ? "text-white/70" : "text-muted")}>
-                    <Clock size={12} aria-hidden />
+                <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2.5">
+                  <span className="truncate text-[14.5px] font-semibold">{item.name}</span>
+                  <span className={clsx("inline-flex shrink-0 items-center gap-1 text-[12.5px]", active ? "text-white/70" : "text-muted")}>
+                    <Clock size={12} aria-hidden className="translate-y-px" />
                     {formatDuration(item.duration_min)}
                   </span>
                 </span>
@@ -226,81 +226,41 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
         </div>
       </fieldset>
 
-      {/* 2 — day and time */}
+      {/* 2 — day and time: by day, by week (shown first) or by month */}
       <div>
-        <div className="mb-2.5 flex items-baseline justify-between">
-          <p className="text-[13px] font-semibold text-ink">{b.chooseDay}</p>
-          <p className="text-[11.5px] text-faint">{b.timezone}</p>
+        <div className="mb-2.5 flex items-baseline justify-between gap-3">
+          <p className="flex items-center gap-2 text-[13px] font-semibold text-ink">
+            <Step index={2} done={Boolean(startsAt)} />
+            {b.stepSlot}
+          </p>
+          <p className="shrink-0 text-[11.5px] text-faint">{b.timezone}</p>
         </div>
         {slots === null ? (
-          <div className="flex h-[76px] items-center gap-2 text-[13.5px] text-muted">
-            <LoaderCircle size={16} className="animate-spin" aria-hidden />
-            {b.loadingSlots}
+          <div aria-busy="true">
+            <p className="flex items-center gap-2 text-[13.5px] text-muted">
+              <LoaderCircle size={16} className="animate-spin" aria-hidden />
+              {b.loadingSlots}
+            </p>
+            <div className="mt-3 space-y-1.5" aria-hidden>
+              {[0, 1, 2, 3].map((row) => (
+                <div key={row} className="skeleton h-[52px] !rounded-[18px]" />
+              ))}
+            </div>
           </div>
         ) : slots.length === 0 ? (
           <p className="rounded-2xl bg-sand px-4 py-4 text-[14px] text-muted">{slotsError ? t.common.errors.generic : b.noSlots}</p>
         ) : (
-          <>
-            <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="group" aria-label={b.chooseDay}>
-              {days.map((key) => {
-                const available = byDay.has(key);
-                const active = key === day;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    disabled={!available}
-                    aria-pressed={active}
-                    aria-label={formatDateKey(key, locale)}
-                    onClick={() => {
-                      setDay(key);
-                      setStartsAt(null);
-                    }}
-                    data-testid={available ? "day-available" : undefined}
-                    className={clsx(
-                      "press flex h-[68px] w-[58px] shrink-0 flex-col items-center justify-center rounded-2xl border text-center",
-                      active
-                        ? "border-ink bg-ink text-paper"
-                        : available
-                          ? "border-line2 bg-paper text-ink hover:border-ink"
-                          : "border-transparent bg-sand text-faint",
-                    )}
-                  >
-                    <span className="text-[11px] font-medium capitalize-first">{dayLabel(key).replace(".", "")}</span>
-                    <span className="mt-0.5 text-[18px] font-semibold tabular">{Number(key.slice(8))}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <p className="mb-2.5 mt-5 text-[13px] font-semibold text-ink">
-              {b.chooseTime}
-              {day ? <span className="font-normal text-muted"> · {formatDateKey(day, locale)}</span> : null}
-            </p>
-            {times.length === 0 ? (
-              <p className="text-[13.5px] text-muted">{b.noSlotsDay}</p>
-            ) : (
-              <div className="grid grid-cols-4 gap-2" role="group" aria-label={b.chooseTime}>
-                {times.map((slot) => {
-                  const active = slot === startsAt;
-                  return (
-                    <button
-                      key={slot}
-                      type="button"
-                      aria-pressed={active}
-                      onClick={() => setStartsAt(slot)}
-                      data-testid="slot"
-                      className={clsx(
-                        "press h-11 rounded-xl border text-[14px] font-semibold tabular",
-                        active ? "border-ink bg-ink text-paper" : "border-line2 bg-paper text-ink hover:border-ink",
-                      )}
-                    >
-                      {formatTime(slot, locale)}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </>
+          <SlotPicker
+            slots={slots}
+            today={today}
+            day={day}
+            startsAt={startsAt}
+            onDay={setDay}
+            onSlot={(slot) => {
+              setStartsAt(slot);
+              setDay(parisDateKey(slot));
+            }}
+          />
         )}
       </div>
 
@@ -308,7 +268,10 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
       {startsAt ? (
         <div className="animate-fade-up space-y-5">
           <fieldset>
-            <legend className="mb-2.5 text-[13px] font-semibold text-ink">{b.where}</legend>
+            <legend className="mb-2.5 flex items-center gap-2 text-[13px] font-semibold text-ink">
+              <Step index={3} done />
+              {b.where}
+            </legend>
             <div className="flex flex-wrap gap-2">
               {locations.map((kind) => (
                 <label key={kind} className="press cursor-pointer">
@@ -342,7 +305,8 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
             />
           </label>
 
-          <div className="rounded-2xl bg-sand px-4 py-3.5">
+          <div className="rounded-2xl bg-flame-soft px-4 py-3.5" data-testid="booking-summary">
+            <p className="eyebrow mb-1 text-flame-strong">{t.calendar.slots.chosen}</p>
             <p className="text-[14.5px] font-semibold text-ink">
               {service?.name} · {formatDuration(duration)}
             </p>
@@ -357,24 +321,26 @@ export function BookingPanel({ coach, services, locations, signedIn, isOwn, book
         </div>
       ) : null}
 
-      {error ? (
-        <p role="alert" className="rounded-2xl bg-danger-soft px-4 py-3 text-[13.5px] text-danger">
-          {error}
-        </p>
-      ) : null}
-
-      <Button size="lg" block onClick={submit} disabled={!startsAt} loading={submitting} data-testid="booking-submit">
-        {b.submit}
-        {service ? <span className="font-normal opacity-70">· {formatPrice(service.price_cents, locale)}</span> : null}
-      </Button>
-      {!signedIn ? (
-        <p className="-mt-3 text-center text-[12.5px] text-muted">
-          {b.loginToBook} ·{" "}
-          <Link href={`/connexion?next=${encodeURIComponent(`/coach/${coach.slug}`)}`} className="font-semibold text-ink underline underline-offset-2">
-            {t.common.nav.login}
-          </Link>
-        </p>
-      ) : null}
+      {/* always reachable: sticks to the bottom of the sheet (phones) or of the panel (desktop) */}
+      <div className="sticky -bottom-5 z-10 -mx-1 space-y-3 bg-gradient-to-t from-paper from-80% to-paper/0 px-1 pb-2 pt-4 lg:bottom-0 lg:pb-1">
+        {error ? (
+          <p role="alert" className="rounded-2xl bg-danger-soft px-4 py-3 text-[13.5px] text-danger">
+            {error}
+          </p>
+        ) : null}
+        <Button size="lg" variant="accent" block onClick={submit} disabled={!startsAt} loading={submitting} data-testid="booking-submit">
+          {b.submit}
+          {service ? <span className="font-normal opacity-85">· {formatPrice(service.price_cents, locale)}</span> : null}
+        </Button>
+        {!signedIn ? (
+          <p className="text-center text-[12.5px] text-muted">
+            {b.loginToBook} ·{" "}
+            <Link href={`/connexion?next=${encodeURIComponent(`/coach/${coach.slug}`)}`} className="font-semibold text-ink underline underline-offset-2">
+              {t.common.nav.login}
+            </Link>
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

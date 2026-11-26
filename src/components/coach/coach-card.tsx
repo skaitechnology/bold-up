@@ -44,9 +44,10 @@ function Price({ coach, t, locale }: Pick<Props, "coach" | "t" | "locale">) {
 /** Portrait card for grids: the photo carries the card, the name sits on it. */
 export function CoachCard({ coach, t, locale, favorite, signedIn, eager }: Props) {
   return (
-    <article className="group relative">
+    <article className="group relative" data-tone={coach.sports[0]?.slug ?? "coach"}>
       <Link href={`/coach/${coach.slug}`} className="block" data-testid="coach-card">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-sand2">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[24px] bg-sand2 transition-shadow duration-300 group-hover:shadow-lift">
+          <span aria-hidden className="tone-solid absolute inset-x-0 bottom-0 z-10 h-1.5 origin-left scale-x-[0.28] transition-transform duration-500 ease-out-soft group-hover:scale-x-100" />
           <div className="h-full w-full transition-transform duration-700 ease-out-soft group-hover:scale-[1.04]">
             <CoachPortrait photoPath={coach.photoPath} name={coach.displayName} eager={eager} />
           </div>
@@ -65,7 +66,7 @@ export function CoachCard({ coach, t, locale, favorite, signedIn, eager }: Props
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-1.5 px-1">
           {coach.sports.slice(0, 3).map((sport) => (
-            <span key={sport.id} className="inline-flex h-6 items-center gap-1.5 rounded-full bg-sand2 px-2.5 text-[12px] font-medium text-ink2">
+            <span key={sport.id} data-tone={sport.slug} className="tone-soft inline-flex h-6 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-semibold">
               <SportIcon icon={sport.icon} size={12} />
               {localizedName(sport, locale)}
             </span>
@@ -92,8 +93,9 @@ export function CoachRow({
     <article
       className={clsx(
         "group relative rounded-[22px] border bg-paper p-2.5 transition",
-        active ? "border-ink shadow-lift" : "border-line hover:border-line2 hover:shadow-card",
+        active ? "tone-border shadow-lift" : "border-line hover:border-line2 hover:shadow-card",
       )}
+      data-tone={coach.sports[0]?.slug ?? "coach"}
       onMouseEnter={onHover ? () => onHover(coach.id) : undefined}
       onMouseLeave={onHover ? () => onHover(null) : undefined}
       data-coach-id={coach.id}

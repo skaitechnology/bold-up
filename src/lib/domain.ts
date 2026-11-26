@@ -21,7 +21,33 @@ export type LocationKind = (typeof LOCATION_KINDS)[number];
 export const QUALIFICATION_KINDS = ["carte_pro", "bpjeps", "dejeps", "desjeps", "staps", "cqp", "federal", "other"] as const;
 export type QualificationKind = (typeof QUALIFICATION_KINDS)[number];
 
-export const VENUE_CATEGORIES = ["gym", "studio", "shop", "school", "other"] as const;
+/** Every kind of place stored in `venues` (admin forms list them all). */
+export const VENUE_CATEGORIES = ["gym", "studio", "shop", "school", "other", "club", "street_workout"] as const;
+/** The "Salles" listing: indoor training venues, i.e. neither a club nor an outdoor spot. */
+export const GYM_CATEGORIES = ["gym", "studio", "shop", "school", "other"] as const;
+export const isGymCategory = (category: string) => (GYM_CATEGORIES as readonly string[]).includes(category);
+
+/** Public route of a place, by category. */
+export function placeHref(place: { category: string; slug: string }): string {
+  if (place.category === "club") return `/club/${place.slug}`;
+  if (place.category === "street_workout") return `/street-workout/${place.slug}`;
+  return `/salle/${place.slug}`;
+}
+
+/**
+ * Facilities with a translated label and a filter. `venues.facilities` may also hold
+ * free text (older gym listings), which is shown as written.
+ */
+export const SPOT_FEATURES = ["pull_up_bars", "parallel_bars", "monkey_bars", "rings", "abs_bench", "stall_bars", "lighting", "water", "covered"] as const;
+export const CLUB_FEATURES = ["competition", "leisure", "kids", "adults", "changing_rooms", "parking", "accessible"] as const;
+export const PLACE_FEATURES = [...SPOT_FEATURES, ...CLUB_FEATURES] as const;
+export type PlaceFeature = (typeof PLACE_FEATURES)[number];
+export const isPlaceFeature = (value: string): value is PlaceFeature => (PLACE_FEATURES as readonly string[]).includes(value);
+
+export const EVENT_KINDS = ["hyrox", "marathon", "trail", "competition", "challenge", "local"] as const;
+export type EventKind = (typeof EVENT_KINDS)[number];
+export const EVENT_LEVELS = ["all", "beginner", "intermediate", "advanced"] as const;
+export type EventLevel = (typeof EVENT_LEVELS)[number];
 
 export const DOCUMENT_MIME_TYPES = ["application/pdf", "image/jpeg", "image/png"] as const;
 export const DOCUMENT_MAX_BYTES = 10 * 1024 * 1024;

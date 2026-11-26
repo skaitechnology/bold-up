@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { COMMUNES, DEFAULT_PLACE, distanceKm, findCommune, jitter, searchCommunes } from "@/lib/geo";
 import { searchCoaches, searchVenues, type CoachCard, type VenueCard } from "@/lib/search";
-import { buildSearchUrl, parseSearchParams } from "@/lib/search-params";
+import { availabilityWeekdays, buildSearchUrl, parseSearchParams } from "@/lib/search-params";
 
 const coach = (over: Partial<CoachCard>): CoachCard => ({
   id: over.slug ?? "id",
@@ -20,6 +20,7 @@ const coach = (over: Partial<CoachCard>): CoachCard => ({
   yearsExperience: null,
   isDemo: true,
   sports: [{ id: "s1", slug: "boxe", name_fr: "Boxe", name_en: "Boxing", icon: "boxing" }],
+  weekdays: [1, 2, 3, 4, 5],
   minPriceCents: 5000,
   distanceKm: null,
   ...over,
@@ -97,6 +98,10 @@ describe("venue search", () => {
     isDemo: false,
     source: "osm",
     photoPath: null,
+    sports: [],
+    facilities: [],
+    isFree: false,
+    alwaysOpen: false,
     distanceKm: null,
     ...over,
   });
@@ -108,7 +113,16 @@ describe("venue search", () => {
 
 describe("search URL", () => {
   it("round-trips the whole search state", () => {
-    const url = buildSearchUrl({ sport: "boxe", place: { name: "Vincennes", lat: 48.8475, lng: 2.4392 }, radiusKm: 5, maxPrice: 50, showVenues: false });
+    const url = buildSearchUrl({
+      sport: "boxe",
+      place: { name: "Vincennes", lat: 48.8475, lng: 2.4392 },
+      radiusKm: 5,
+      maxPrice: 50,
+      showVenues: false,
+      availability: "weekend",
+      location: "outdoor",
+      sort: "price",
+    });
     const params = Object.fromEntries(new URL(url, "http://x").searchParams);
     expect(parseSearchParams(params)).toEqual({
       sport: "boxe",
@@ -116,7 +130,18 @@ describe("search URL", () => {
       radiusKm: 5,
       maxPrice: 50,
       showVenues: false,
+      availability: "weekend",
+      location: "outdoor",
+      sort: "price",
     });
+  });
+  it("filters coaches by working days and by where they train, and can sort by price", () => {
+    const weekend = coach({ slug: "weekend", weekdays: [6, 7], outdoor: true, minPriceCents: 6000 });
+    const weekdays = coach({ slug: "weekdays", weekdays: [1, 3], minPriceCents: 3000 });
+    expect(searchCoaches([weekend, weekdays], { weekdays: availabilityWeekdays("weekend", 2) }).map((c) => c.slug)).toEqual(["weekend"]);
+    expect(searchCoaches([weekend, weekdays], { weekdays: availabilityWeekdays("today", 3) }).map((c) => c.slug)).toEqual(["weekdays"]);
+    expect(searchCoaches([weekend, weekdays], { location: "outdoor" }).map((c) => c.slug)).toEqual(["weekend"]);
+    expect(searchCoaches([weekend, weekdays], { sort: "price" }).map((c) => c.slug)).toEqual(["weekdays", "weekend"]);
   });
   it("defaults to Créteil and ignores invalid input", () => {
     const state = parseSearchParams({ sport: "<script>", lat: "999", lng: "abc", rayon: "7", prix: "-1" });

@@ -347,6 +347,20 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"events": {
+                  Row: {
+                    "address": string | null,"city": string | null,"created_at": string,"description": string,"ends_on": string | null,"formats": (string)[],"id": string,"is_demo": boolean,"is_free": boolean,"is_published": boolean,"kind": string,"lat": number,"level": string,"lng": number,"name": string,"organizer": string | null,"photo_path": string | null,"place_name": string | null,"postal_code": string | null,"price_from_cents": number | null,"slug": string,"source": string,"sport_slug": string | null,"start_time": string | null,"starts_on": string,"summary": string,"updated_at": string,"website": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "address"?: string | null,"city"?: string | null,"created_at"?: string,"description"?: string,"ends_on"?: string | null,"formats"?: (string)[],"id"?: string,"is_demo"?: boolean,"is_free"?: boolean,"is_published"?: boolean,"kind": string,"lat": number,"level"?: string,"lng": number,"name": string,"organizer"?: string | null,"photo_path"?: string | null,"place_name"?: string | null,"postal_code"?: string | null,"price_from_cents"?: number | null,"slug": string,"source"?: string,"sport_slug"?: string | null,"start_time"?: string | null,"starts_on": string,"summary"?: string,"updated_at"?: string,"website"?: string | null
+                  }
+                  Update: {
+                    "address"?: string | null,"city"?: string | null,"created_at"?: string,"description"?: string,"ends_on"?: string | null,"formats"?: (string)[],"id"?: string,"is_demo"?: boolean,"is_free"?: boolean,"is_published"?: boolean,"kind"?: string,"lat"?: number,"level"?: string,"lng"?: number,"name"?: string,"organizer"?: string | null,"photo_path"?: string | null,"place_name"?: string | null,"postal_code"?: string | null,"price_from_cents"?: number | null,"slug"?: string,"source"?: string,"sport_slug"?: string | null,"start_time"?: string | null,"starts_on"?: string,"summary"?: string,"updated_at"?: string,"website"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"favorites": {
                   Row: {
                     "coach_id": string,"created_at": string,"customer_id": string
@@ -501,14 +515,14 @@ isOneToOne: false
                   ]
                 },"venues": {
                   Row: {
-                    "address": string | null,"category": Database["public"]['Enums']["venue_category"],"city": string | null,"claim_status": Database["public"]['Enums']["claim_status"],"created_at": string,"description": string,"facilities": (string)[],"id": string,"is_demo": boolean,"is_published": boolean,"lat": number,"lng": number,"name": string,"partner_status": Database["public"]['Enums']["partner_status"],"phone": string | null,"photo_path": string | null,"postal_code": string | null,"slug": string,"source": string,"source_ref": string | null,"updated_at": string,"website": string | null
+                    "address": string | null,"always_open": boolean,"category": Database["public"]['Enums']["venue_category"],"city": string | null,"claim_status": Database["public"]['Enums']["claim_status"],"created_at": string,"description": string,"facilities": (string)[],"id": string,"is_demo": boolean,"is_free": boolean,"is_published": boolean,"lat": number,"lng": number,"name": string,"partner_status": Database["public"]['Enums']["partner_status"],"phone": string | null,"photo_path": string | null,"postal_code": string | null,"slug": string,"source": string,"source_ref": string | null,"sports": (string)[],"updated_at": string,"website": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "address"?: string | null,"category"?: Database["public"]['Enums']["venue_category"],"city"?: string | null,"claim_status"?: Database["public"]['Enums']["claim_status"],"created_at"?: string,"description"?: string,"facilities"?: (string)[],"id"?: string,"is_demo"?: boolean,"is_published"?: boolean,"lat": number,"lng": number,"name": string,"partner_status"?: Database["public"]['Enums']["partner_status"],"phone"?: string | null,"photo_path"?: string | null,"postal_code"?: string | null,"slug": string,"source"?: string,"source_ref"?: string | null,"updated_at"?: string,"website"?: string | null
+                    "address"?: string | null,"always_open"?: boolean,"category"?: Database["public"]['Enums']["venue_category"],"city"?: string | null,"claim_status"?: Database["public"]['Enums']["claim_status"],"created_at"?: string,"description"?: string,"facilities"?: (string)[],"id"?: string,"is_demo"?: boolean,"is_free"?: boolean,"is_published"?: boolean,"lat": number,"lng": number,"name": string,"partner_status"?: Database["public"]['Enums']["partner_status"],"phone"?: string | null,"photo_path"?: string | null,"postal_code"?: string | null,"slug": string,"source"?: string,"source_ref"?: string | null,"sports"?: (string)[],"updated_at"?: string,"website"?: string | null
                   }
                   Update: {
-                    "address"?: string | null,"category"?: Database["public"]['Enums']["venue_category"],"city"?: string | null,"claim_status"?: Database["public"]['Enums']["claim_status"],"created_at"?: string,"description"?: string,"facilities"?: (string)[],"id"?: string,"is_demo"?: boolean,"is_published"?: boolean,"lat"?: number,"lng"?: number,"name"?: string,"partner_status"?: Database["public"]['Enums']["partner_status"],"phone"?: string | null,"photo_path"?: string | null,"postal_code"?: string | null,"slug"?: string,"source"?: string,"source_ref"?: string | null,"updated_at"?: string,"website"?: string | null
+                    "address"?: string | null,"always_open"?: boolean,"category"?: Database["public"]['Enums']["venue_category"],"city"?: string | null,"claim_status"?: Database["public"]['Enums']["claim_status"],"created_at"?: string,"description"?: string,"facilities"?: (string)[],"id"?: string,"is_demo"?: boolean,"is_free"?: boolean,"is_published"?: boolean,"lat"?: number,"lng"?: number,"name"?: string,"partner_status"?: Database["public"]['Enums']["partner_status"],"phone"?: string | null,"photo_path"?: string | null,"postal_code"?: string | null,"slug"?: string,"source"?: string,"source_ref"?: string | null,"sports"?: (string)[],"updated_at"?: string,"website"?: string | null
                   }
                   Relationships: [
                     
@@ -674,7 +688,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "booking_status": "requested"|"accepted"|"declined"|"cancelled"|"completed","claim_status": "unclaimed"|"claimed","document_status": "uploaded"|"precheck_pending"|"precheck_completed"|"needs_attention"|"awaiting_review"|"approved"|"rejected"|"info_requested"|"expired","partner_status": "listed"|"partner","user_role": "customer"|"coach"|"admin","venue_category": "gym"|"studio"|"shop"|"school"|"other","verification_status": "draft"|"awaiting_review"|"changes_requested"|"approved"|"rejected"|"suspended"
+            "booking_status": "requested"|"accepted"|"declined"|"cancelled"|"completed","claim_status": "unclaimed"|"claimed","document_status": "uploaded"|"precheck_pending"|"precheck_completed"|"needs_attention"|"awaiting_review"|"approved"|"rejected"|"info_requested"|"expired","partner_status": "listed"|"partner","user_role": "customer"|"coach"|"admin","venue_category": "gym"|"studio"|"shop"|"school"|"other"|"club"|"street_workout","verification_status": "draft"|"awaiting_review"|"changes_requested"|"approved"|"rejected"|"suspended"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -794,7 +808,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "booking_status": ["requested", "accepted", "declined", "cancelled", "completed"],"claim_status": ["unclaimed", "claimed"],"document_status": ["uploaded", "precheck_pending", "precheck_completed", "needs_attention", "awaiting_review", "approved", "rejected", "info_requested", "expired"],"partner_status": ["listed", "partner"],"user_role": ["customer", "coach", "admin"],"venue_category": ["gym", "studio", "shop", "school", "other"],"verification_status": ["draft", "awaiting_review", "changes_requested", "approved", "rejected", "suspended"]
+            "booking_status": ["requested", "accepted", "declined", "cancelled", "completed"],"claim_status": ["unclaimed", "claimed"],"document_status": ["uploaded", "precheck_pending", "precheck_completed", "needs_attention", "awaiting_review", "approved", "rejected", "info_requested", "expired"],"partner_status": ["listed", "partner"],"user_role": ["customer", "coach", "admin"],"venue_category": ["gym", "studio", "shop", "school", "other", "club", "street_workout"],"verification_status": ["draft", "awaiting_review", "changes_requested", "approved", "rejected", "suspended"]
           }
         }
 } as const

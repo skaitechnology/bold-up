@@ -1,22 +1,37 @@
 @import "tailwindcss";
 
-/* ================================================================ BOLD UP design system
-   Black and white first. Warm off-white surfaces, one restrained champagne accent.
-   Every color used by components is a token below, never a hardcoded value. */
+/* ================================================================ BOLD UP design system (V2)
+   Sporty, vivid, premium. A deep night base, a "flame" brand gradient, a volt highlight,
+   and one colour per discipline (the tone system further down).
+   Every color used by components is a token below, never a hardcoded value.
+   Champagne gold is reserved for one meaning: "verified by a human". */
 
 @theme inline {
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Archivo Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink: #111111;
-  --color-ink2: #1c1c1c;
+  --color-ink: #0e0b1f;
+  --color-ink2: #1b1830;
+  --color-ink3: #2a2645;
   --color-paper: #ffffff;
-  --color-sand: #f7f7f5;
-  --color-sand2: #efeee9;
-  --color-line: #e8e6e1;
-  --color-line2: #d3d0c8;
-  --color-muted: #66655f;
-  --color-faint: #96948d;
+  --color-sand: #f6f5fb;
+  --color-sand2: #ecebf5;
+  --color-line: #e6e3f0;
+  --color-line2: #cfcbe0;
+  --color-muted: #5f5b76;
+  --color-faint: #938fa8;
+
+  /* brand energy */
+  --color-flame: #ff4d2e;
+  --color-flame-strong: #d9300f;
+  --color-flame-soft: #ffede8;
+  --color-pulse: #ff2e93;
+  --color-pulse-strong: #cf1470;
+  --color-violet: #6c3bff;
+  --color-violet-soft: #efeaff;
+  --color-volt: #c8f53c;
+  --color-volt-ink: #2c3a00;
+  --color-sky: #1e9bf0;
 
   --color-gold: #b8975a;
   --color-gold-ink: #775c2b;
@@ -29,11 +44,12 @@
   --color-warn-soft: #fbf3e2;
   --color-danger: #b2382d;
   --color-danger-soft: #fbedeb;
-  --color-scrim: rgb(17 17 17 / 0.5);
+  --color-scrim: rgb(14 11 31 / 0.55);
 
-  --shadow-card: 0 1px 2px rgb(17 17 17 / 0.04), 0 10px 28px -14px rgb(17 17 17 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(17 17 17 / 0.05), 0 18px 40px -16px rgb(17 17 17 / 0.22);
-  --shadow-pop: 0 28px 70px -20px rgb(17 17 17 / 0.38), 0 2px 8px rgb(17 17 17 / 0.06);
+  --shadow-card: 0 1px 2px rgb(14 11 31 / 0.04), 0 10px 28px -14px rgb(14 11 31 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(14 11 31 / 0.05), 0 18px 40px -16px rgb(14 11 31 / 0.24);
+  --shadow-pop: 0 28px 70px -20px rgb(14 11 31 / 0.4), 0 2px 8px rgb(14 11 31 / 0.06);
+  --shadow-glow: 0 10px 30px -8px rgb(255 77 46 / 0.55), 0 4px 14px -6px rgb(255 46 147 / 0.45);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
@@ -42,6 +58,18 @@
   --animate-pop: bu-pop 260ms var(--ease-out-soft) both;
   --animate-sheet: bu-sheet 320ms var(--ease-out-soft) both;
   --animate-fade: bu-fade 200ms ease-out both;
+  --animate-pin-in: bu-pin-in 420ms var(--ease-spring) both;
+  --animate-float: bu-float 5s ease-in-out infinite;
+  --animate-shine: bu-shine 2.6s linear infinite;
+  --animate-slide-in: bu-slide-in 360ms var(--ease-out-soft) both;
+}
+
+:root {
+  /* text-bearing version (white text passes AA) and the vivid decorative version */
+  --gradient-bold: linear-gradient(120deg, var(--color-flame-strong) 0%, var(--color-pulse-strong) 55%, #5b2be0 100%);
+  --gradient-vivid: linear-gradient(120deg, var(--color-flame) 0%, var(--color-pulse) 55%, #7b2ff7 100%);
+  --gradient-night: radial-gradient(120% 90% at 85% -10%, rgb(108 59 255 / 0.55), transparent 55%),
+    radial-gradient(90% 80% at -5% 110%, rgb(255 77 46 / 0.42), transparent 55%), var(--color-ink);
 }
 
 @keyframes bu-fade-up {
@@ -59,6 +87,31 @@
 @keyframes bu-fade {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+@keyframes bu-pin-in {
+  0% { opacity: 0; transform: translateY(10px) scale(0.4); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes bu-ring {
+  0% { transform: scale(0.9); opacity: 0.75; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+@keyframes bu-bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-9px); }
+  70% { transform: translateY(-3px); }
+}
+@keyframes bu-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes bu-shine {
+  from { background-position: 0% 50%; }
+  to { background-position: 200% 50%; }
+}
+@keyframes bu-slide-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes bu-shimmer {
   from { background-position: 200% 0; }
@@ -94,6 +147,132 @@ body {
 }
 .on-dark :focus-visible {
   outline-color: var(--color-paper);
+}
+/* a light panel placed inside a dark section */
+.on-dark .on-light :focus-visible {
+  outline-color: var(--color-ink);
+}
+
+/* ---------- tone system: one colour per discipline, place and event type ----------
+   Put data-tone="<key>" on an element; it and its children can then use the tone-*
+   utilities. Keys are sports.slug values, venue categories and event kinds. */
+
+:root,
+[data-tone] {
+  --tone: var(--color-ink);
+  --tone-soft: var(--color-sand2);
+  --tone-ink: var(--color-ink);
+  --tone-on: #ffffff;
+}
+/* one fixed colour per kind of pin, used by the cluster rings */
+:root {
+  --kind-coach: #ff4d2e;
+  --kind-venue: #5b6b8c;
+  --kind-club: #2d5bff;
+  --kind-street_workout: #a8d820;
+  --kind-event: #ff2e93;
+}
+/* disciplines */
+[data-tone="boxe"] { --tone: #e5383b; --tone-soft: #fdecec; --tone-ink: #a61b1e; }
+[data-tone="musculation"] { --tone: #4f46e5; --tone-soft: #ecebfd; --tone-ink: #3730a3; }
+[data-tone="fitness"] { --tone: #ec3d8a; --tone-soft: #fdebf3; --tone-ink: #ac1b5c; }
+[data-tone="running"] { --tone: #ff7a1a; --tone-soft: #fff0e3; --tone-ink: #a84700; --tone-on: #1b0d00; }
+[data-tone="yoga"] { --tone: #12b5a6; --tone-soft: #e2f7f4; --tone-ink: #0a6f66; --tone-on: #00221f; }
+[data-tone="pilates"] { --tone: #a259ff; --tone-soft: #f3eaff; --tone-ink: #6d2bc4; }
+[data-tone="cross-training"] { --tone: #f5a300; --tone-soft: #fff4d9; --tone-ink: #855800; --tone-on: #231700; }
+[data-tone="natation"] { --tone: #1e9bf0; --tone-soft: #e4f3fe; --tone-ink: #0b63a5; --tone-on: #00182b; }
+[data-tone="preparation-physique"] { --tone: #6fbf21; --tone-soft: #edf8e0; --tone-ink: #3b6b0d; --tone-on: #132400; }
+[data-tone="remise-en-forme"] { --tone: #17b26a; --tone-soft: #e3f7ec; --tone-ink: #0c6b3e; --tone-on: #00210f; }
+/* people and places */
+[data-tone="coach"] { --tone: #ff4d2e; --tone-soft: #ffede8; --tone-ink: #b8290c; }
+[data-tone="gym"],
+[data-tone="studio"],
+[data-tone="shop"],
+[data-tone="school"],
+[data-tone="other"] { --tone: #5b6b8c; --tone-soft: #eaeef6; --tone-ink: #3a4763; }
+[data-tone="club"] { --tone: #2d5bff; --tone-soft: #e8edff; --tone-ink: #1a3bc0; }
+[data-tone="street_workout"] { --tone: #c8f53c; --tone-soft: #f2fccb; --tone-ink: #3f5200; --tone-on: #1a2200; }
+/* events */
+[data-tone="event"] { --tone: #ff2e93; --tone-soft: #ffe8f3; --tone-ink: #b0145f; }
+[data-tone="hyrox"] { --tone: #ffc400; --tone-soft: #fff6d1; --tone-ink: #7a5c00; --tone-on: #1f1700; }
+[data-tone="marathon"] { --tone: #ff4d2e; --tone-soft: #ffede8; --tone-ink: #b8290c; }
+[data-tone="trail"] { --tone: #2f9e44; --tone-soft: #e5f5e8; --tone-ink: #1c6a2b; }
+[data-tone="competition"] { --tone: #7c3aed; --tone-soft: #f0e9fe; --tone-ink: #5521b5; }
+[data-tone="challenge"] { --tone: #ff2e93; --tone-soft: #ffe8f3; --tone-ink: #b0145f; }
+[data-tone="local"] { --tone: #1e9bf0; --tone-soft: #e4f3fe; --tone-ink: #0b63a5; --tone-on: #00182b; }
+
+@utility tone-solid {
+  background-color: var(--tone);
+  color: var(--tone-on);
+}
+@utility tone-soft {
+  background-color: var(--tone-soft);
+  color: var(--tone-ink);
+}
+@utility tone-text {
+  color: var(--tone-ink);
+}
+@utility tone-fill {
+  color: var(--tone);
+}
+@utility tone-border {
+  border-color: var(--tone);
+}
+@utility tone-ring {
+  box-shadow: 0 0 0 2px var(--color-paper), 0 0 0 4.5px var(--tone);
+}
+/* soft coloured halo behind a tone-coloured block (covers, icon tiles) */
+@utility tone-cover {
+  background:
+    radial-gradient(120% 120% at 100% 0%, rgb(255 255 255 / 0.34), transparent 55%),
+    linear-gradient(140deg, var(--tone), color-mix(in oklab, var(--tone) 62%, var(--color-ink)));
+  color: #ffffff;
+}
+
+/* ---------- brand surfaces ---------- */
+
+@utility bg-bold {
+  background-image: var(--gradient-bold);
+}
+@utility bg-vivid {
+  background-image: var(--gradient-vivid);
+}
+@utility bg-night {
+  background: var(--gradient-night);
+}
+/* gradient headline accent: <span class="text-bold-gradient">COACH</span> */
+@utility text-bold-gradient {
+  background-image: linear-gradient(100deg, #ff8a5c 0%, #ff4d9d 45%, #b48bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility text-flame-gradient {
+  background-image: var(--gradient-bold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* lifts on hover, used by cards */
+@utility hover-lift {
+  transition: transform 260ms var(--ease-out-soft), box-shadow 260ms var(--ease-out-soft), border-color 200ms;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+}
+@utility stagger {
+  & > * {
+    animation: bu-fade-up 480ms var(--ease-out-soft) both;
+  }
+  & > *:nth-child(2) { animation-delay: 50ms; }
+  & > *:nth-child(3) { animation-delay: 100ms; }
+  & > *:nth-child(4) { animation-delay: 150ms; }
+  & > *:nth-child(5) { animation-delay: 200ms; }
+  & > *:nth-child(6) { animation-delay: 250ms; }
+  & > *:nth-child(7) { animation-delay: 300ms; }
+  & > *:nth-child(8) { animation-delay: 350ms; }
+  & > *:nth-child(n + 9) { animation-delay: 400ms; }
 }
 
 /* ---------- typography helpers ---------- */
@@ -194,75 +373,245 @@ html:has(dialog.bu-dialog[open]) {
   background: rgb(255 255 255 / 0.82) !important;
 }
 .maplibregl-ctrl-group {
-  border-radius: 14px !important;
+  border-radius: 16px !important;
   overflow: hidden;
   box-shadow: var(--shadow-card) !important;
   border: 1px solid var(--color-line);
 }
 .maplibregl-ctrl-group button {
-  width: 38px !important;
-  height: 38px !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+/* stacking: people over bubbles over places, so a portrait is never hidden by a count;
+   a hovered marker comes forward and the selected one sits above everything */
+.maplibregl-marker:has(.bu-cluster),
+.maplibregl-marker:has(.bu-pin[data-kind="event"]) {
+  z-index: 2;
+}
+.maplibregl-marker:has(.bu-pin[data-kind="coach"]) {
+  z-index: 3;
+}
+.maplibregl-marker:hover {
+  z-index: 20;
+}
+.maplibregl-marker:has([data-active="true"]) {
+  z-index: 30 !important;
 }
 
+/* Every pin is a <button class="bu-pin" data-kind="…" data-tone="…">. */
 .bu-pin {
+  position: relative;
+  display: block;
   cursor: pointer;
-  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-ink);
+  animation: bu-pin-in 420ms var(--ease-spring) both;
+  -webkit-tap-highlight-color: transparent;
+}
+.bu-pin-body {
+  position: relative;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 11px;
+  justify-content: center;
+  transition: transform 260ms var(--ease-spring), box-shadow 220ms, filter 220ms;
+  will-change: transform;
+}
+.bu-pin:hover .bu-pin-body {
+  transform: translateY(-3px) scale(1.08);
+}
+.bu-pin[data-active="true"] .bu-pin-body {
+  transform: scale(1.28);
+  animation: bu-bounce 620ms var(--ease-out-soft) 1;
+}
+/* expanding ring behind the selected pin */
+.bu-pin[data-active="true"]::before,
+.bu-pin[data-active="true"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: var(--pin-center, 50%);
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-radius: 999px;
+  background: var(--tone);
+  opacity: 0;
+  animation: bu-ring 1.6s var(--ease-out-soft) infinite;
+  pointer-events: none;
+}
+.bu-pin[data-active="true"]::after {
+  animation-delay: 0.8s;
+}
+
+/* -- coach: the portrait itself, ringed in the discipline colour */
+.bu-pin[data-kind="coach"] {
+  --pin-center: 26px;
+}
+.bu-pin[data-kind="coach"] .bu-pin-body {
+  flex-direction: column;
+}
+.bu-pin-avatar {
+  position: relative;
+  width: 52px;
+  height: 52px;
   border-radius: 999px;
   background: var(--color-paper);
-  color: var(--color-ink);
-  border: 1px solid var(--color-line2);
-  box-shadow: 0 4px 14px -4px rgb(17 17 17 / 0.3);
-  font-size: 12.5px;
-  font-weight: 650;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  transition: transform 160ms var(--ease-out-soft), background-color 160ms, color 160ms;
+  padding: 3px;
+  box-shadow: 0 0 0 2.5px var(--tone), 0 8px 18px -6px rgb(14 11 31 / 0.5);
 }
-.bu-pin[data-kind="coach"] {
-  background: var(--color-ink);
-  color: var(--color-paper);
-  border-color: var(--color-ink);
-}
-.bu-pin:hover,
-.bu-pin[data-active="true"] {
-  background: var(--color-ink);
-  color: var(--color-paper);
-  border-color: var(--color-ink);
-  transform: scale(1.1);
-  z-index: 5;
-}
-.bu-pin[data-kind="coach"][data-active="true"],
-.bu-pin[data-kind="coach"]:hover {
-  box-shadow: 0 0 0 3px var(--color-gold), 0 6px 18px -4px rgb(17 17 17 / 0.45);
-}
-.bu-pin[data-kind="venue"] {
-  width: 30px;
-  padding: 0;
+.bu-pin-avatar > img,
+.bu-pin-initials {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  background: var(--color-sand);
-  color: var(--color-muted);
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  object-fit: cover;
+  background: var(--tone);
+  color: var(--tone-on);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
 }
-.bu-pin[data-kind="venue"][data-partner="true"] {
-  background: var(--color-gold-soft);
-  color: var(--color-gold-ink);
-  border-color: var(--color-gold-line);
+.bu-pin-badge {
+  position: absolute;
+  right: -5px;
+  bottom: -3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--tone);
+  color: var(--tone-on);
+  border: 2px solid var(--color-paper);
 }
-.bu-pin[data-kind="venue"]:hover,
-.bu-pin[data-kind="venue"][data-active="true"] {
-  background: var(--color-ink);
-  color: var(--color-paper);
-}
-.bu-pin-me {
-  width: 16px;
-  height: 16px;
+.bu-pin-label {
+  margin-top: 4px;
+  padding: 2px 8px;
   border-radius: 999px;
   background: var(--color-ink);
+  color: var(--color-paper);
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px -4px rgb(14 11 31 / 0.5);
+}
+.bu-pin[data-active="true"] .bu-pin-label {
+  background: var(--tone);
+  color: var(--tone-on);
+}
+
+/* -- places and events: a coloured tile with the category icon */
+.bu-pin-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 13px;
+  background: var(--tone);
+  color: var(--tone-on);
+  border: 2.5px solid var(--color-paper);
+  box-shadow: 0 8px 16px -6px rgb(14 11 31 / 0.5);
+}
+.bu-pin[data-kind="venue"] .bu-pin-tile {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+}
+.bu-pin[data-kind="venue"][data-partner="true"] .bu-pin-tile {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+.bu-pin[data-kind="street_workout"] .bu-pin-tile {
+  border-radius: 999px 999px 999px 6px;
+  border-color: var(--color-ink);
+}
+.bu-pin[data-kind="event"] .bu-pin-body {
+  flex-direction: column;
+}
+.bu-pin[data-kind="event"] {
+  --pin-center: 21px;
+}
+.bu-pin[data-kind="event"] .bu-pin-tile {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  transform: rotate(-6deg);
+  background:
+    radial-gradient(120% 120% at 100% 0%, rgb(255 255 255 / 0.4), transparent 55%),
+    var(--tone);
+}
+.bu-pin[data-kind="event"] .bu-pin-tile > * {
+  transform: rotate(6deg);
+}
+
+/* -- cluster: how many, and of what (conic ring by kind) */
+.bu-cluster {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size, 48px);
+  height: var(--size, 48px);
+  border: 0;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: var(--ring, var(--gradient-vivid));
+  box-shadow: 0 10px 22px -8px rgb(14 11 31 / 0.55);
+  animation: bu-pin-in 420ms var(--ease-spring) both;
+  transition: transform 220ms var(--ease-spring);
+}
+.bu-cluster:hover {
+  transform: scale(1.1);
+}
+.bu-cluster > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 9px);
+  height: calc(100% - 9px);
+  border-radius: 999px;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.bu-cluster::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 999px;
+  background: var(--ring, var(--gradient-vivid));
+  opacity: 0.22;
+}
+
+.bu-pin-me {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--color-sky);
   border: 3px solid var(--color-paper);
-  box-shadow: 0 0 0 6px rgb(17 17 17 / 0.12);
+  box-shadow: 0 2px 8px rgb(14 11 31 / 0.35);
+}
+.bu-pin-me::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  background: var(--color-sky);
+  opacity: 0;
+  animation: bu-ring 2s var(--ease-out-soft) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

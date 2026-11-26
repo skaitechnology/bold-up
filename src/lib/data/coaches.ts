@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { CoachCard, SportRef } from "@/lib/search";
 
 const CARD_COLUMNS =
-  "id, slug, display_name, headline, city, lat, lng, photo_path, service_radius_km, at_home, at_gym, outdoor, online, years_experience, is_demo, coach_sports(sports(id, slug, name_fr, name_en, icon, sort_order)), coach_services(price_cents, is_active)";
+  "id, slug, display_name, headline, city, lat, lng, photo_path, service_radius_km, at_home, at_gym, outdoor, online, years_experience, is_demo, coach_sports(sports(id, slug, name_fr, name_en, icon, sort_order)), coach_services(price_cents, is_active), availability_rules(weekday)";
 
 type CardRow = {
   id: string;
@@ -24,6 +24,7 @@ type CardRow = {
   is_demo: boolean;
   coach_sports: { sports: (SportRef & { sort_order: number }) | null }[];
   coach_services: { price_cents: number; is_active: boolean }[];
+  availability_rules: { weekday: number }[];
 };
 
 export function toCoachCard(row: CardRow): CoachCard {
@@ -50,6 +51,7 @@ export function toCoachCard(row: CardRow): CoachCard {
     yearsExperience: row.years_experience,
     isDemo: row.is_demo,
     sports,
+    weekdays: [...new Set(row.availability_rules.map((rule) => rule.weekday))].sort((a, b) => a - b),
     minPriceCents: prices.length ? Math.min(...prices) : null,
     distanceKm: null,
   };

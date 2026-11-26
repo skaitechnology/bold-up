@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Bell } from "lucide-react";
+import { Bell, Map as MapIcon } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { getShellData } from "@/lib/data/shell";
@@ -23,10 +23,27 @@ export async function SiteHeader() {
       </a>
       <div className="mx-auto flex h-16 max-w-[1320px] items-center gap-4 px-4 md:h-[72px] md:px-8">
         <Logo />
-        <nav aria-label={nav.menu} className="ml-6 hidden items-center gap-1 md:flex">
-          <NavLink href="/coachs">{nav.findCoach}</NavLink>
-          <NavLink href="/salles">{nav.venues}</NavLink>
-          <NavLink href={coachHref} match="/pro">
+        <nav aria-label={nav.menu} className="ml-4 hidden items-center gap-0.5 md:flex lg:ml-6">
+          <NavLink href="/carte" featured>
+            <MapIcon size={15} aria-hidden />
+            {nav.map}
+          </NavLink>
+          <NavLink href="/coachs" match={["/coachs", "/coach"]}>
+            {nav.coaches}
+          </NavLink>
+          <NavLink href="/evenements" match={["/evenements", "/evenement"]}>
+            {nav.events}
+          </NavLink>
+          <NavLink href="/clubs" match={["/clubs", "/club"]} className="hidden lg:inline-flex">
+            {nav.clubs}
+          </NavLink>
+          <NavLink href="/street-workout" className="hidden lg:inline-flex">
+            {nav.streetWorkout}
+          </NavLink>
+          <NavLink href="/salles" match={["/salles", "/salle"]} className="hidden xl:inline-flex">
+            {nav.venues}
+          </NavLink>
+          <NavLink href={coachHref} match="/pro" className="hidden xl:inline-flex">
             {user?.role === "coach" ? nav.coachSpace : nav.forCoaches}
           </NavLink>
         </nav>
@@ -41,7 +58,7 @@ export async function SiteHeader() {
               >
                 <Bell size={19} aria-hidden />
                 {unreadNotifications > 0 ? (
-                  <span className="absolute right-1.5 top-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold text-ink">
+                  <span className="absolute right-1.5 top-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-flame px-1 text-[10px] font-bold text-white">
                     {unreadNotifications > 9 ? "9+" : unreadNotifications}
                   </span>
                 ) : null}

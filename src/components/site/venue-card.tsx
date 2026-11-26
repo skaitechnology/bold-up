@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { Building2, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { PlaceIcon } from "@/components/brand/kind-icon";
 import { Badge, DemoBadge } from "@/components/ui/badge";
+import { placeHref } from "@/lib/domain";
 import { formatDistance } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n/config";
@@ -11,13 +13,15 @@ import type { VenueCard as Venue } from "@/lib/search";
 export function VenueCard({ venue, t, locale }: { venue: Venue; t: Dictionary; locale: Locale }) {
   const photo = mediaUrl(venue.photoPath, "venue-media");
   return (
-    <Link href={`/salle/${venue.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-line bg-paper transition hover:border-line2 hover:shadow-card" data-testid="venue-card">
+    <Link href={placeHref(venue)} data-tone={venue.category} className="hover-lift group flex h-full flex-col overflow-hidden rounded-[24px] border border-line bg-paper" data-testid="venue-card">
       <div className="relative aspect-[16/9] overflow-hidden bg-sand2">
         {photo ? (
           <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 ease-out-soft group-hover:scale-[1.04]" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-line2">
-            <Building2 size={44} strokeWidth={1.4} aria-hidden />
+          <div className="tone-soft flex h-full w-full items-center justify-center">
+            <span className="transition-transform duration-500 ease-out-soft group-hover:-rotate-6 group-hover:scale-110">
+              <PlaceIcon category={venue.category} size={48} />
+            </span>
           </div>
         )}
         <div className="absolute left-3 top-3 flex items-center gap-1.5">

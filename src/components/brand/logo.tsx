@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { clsx } from "clsx";
 
-/** BOLD UP wordmark. The small champagne dot is the only ornament. */
+/** BOLD UP wordmark. The small dot carries the brand gradient. */
 export function Logo({
   href = "/",
   inverse,
@@ -29,7 +29,7 @@ export function Logo({
       <span>Bold</span>
       <span className="relative pr-[0.34em]">
         Up
-        <span aria-hidden className="absolute right-0 top-[0.04em] h-[0.24em] w-[0.24em] rounded-full bg-gold" />
+        <span aria-hidden className="absolute right-0 top-[0.04em] h-[0.24em] w-[0.24em] rounded-full bg-vivid" />
       </span>
     </Link>
   );

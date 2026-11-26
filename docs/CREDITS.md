@@ -20,3 +20,5 @@ Replace them with your own photography (or released portraits) before a public l
 Licence texts: Public domain / CC0 need no attribution. CC BY and CC BY-SA images are credited above; adaptations of CC BY-SA images (the resized copies in this repository) remain under the same licence.
 
 Map data © OpenStreetMap contributors (ODbL), tiles and styles by OpenFreeMap. Public venue listings in `scripts/data/osm-venues.json` are derived from OpenStreetMap.
+
+V2: the base map uses OpenFreeMap's "liberty" style (derived from OSM Liberty), recoloured at runtime. Sports clubs, street workout spots and events seeded by `scripts/lib/demo-places.ts` are fictional demonstration content written for this project: they are not derived from OpenStreetMap and do not describe real organisations or real event dates.

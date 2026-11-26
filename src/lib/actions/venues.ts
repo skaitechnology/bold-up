@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { FormState } from "@/lib/actions/pro";
-import { VENUE_CATEGORIES } from "@/lib/domain";
+import { PLACE_FEATURES, VENUE_CATEGORIES } from "@/lib/domain";
 import { fail, ok, toErrorCode, type ActionResult } from "@/lib/errors";
 import { allow, clientIp } from "@/lib/rate-limit";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -83,7 +83,12 @@ const venueSchema = z.object({
     .max(200)
     .refine((value) => value === "" || /^https?:\/\/[^\s]+\.[^\s]+$/i.test(value))
     .transform((value) => value || null),
+  // free-text facilities, comma-separated (the known ones come as `features` checkboxes)
   facilities: z.string().max(600),
+  features: z.array(z.enum(PLACE_FEATURES)).max(PLACE_FEATURES.length),
+  sports: z.array(z.string().regex(/^[a-z0-9-]{2,40}$/)).max(20),
+  is_free: z.boolean(),
+  always_open: z.boolean(),
   partner_status: z.enum(["listed", "partner"]),
   claim_status: z.enum(["unclaimed", "claimed"]),
   is_published: z.boolean(),
@@ -104,20 +109,32 @@ export async function saveVenueAction(_prev: FormState, formData: FormData): Pro
     phone: formData.get("phone") ?? "",
     website: formData.get("website") ?? "",
     facilities: formData.get("facilities") ?? "",
+    features: formData.getAll("features"),
+    sports: formData.getAll("sports"),
+    is_free: formData.get("is_free") === "on",
+    always_open: formData.get("always_open") === "on",
     partner_status: formData.get("partner_status") === "on" ? "partner" : "listed",
     claim_status: formData.get("claim_status") === "on" ? "claimed" : "unclaimed",
     is_published: formData.get("is_published") === "on",
   });
   if (!parsed.success) return { error: "invalid_input" };
   const supabase = await createClient();
-  const { id, facilities, ...rest } = parsed.data;
+  const { id, facilities, features, sports, ...rest } = parsed.data;
+  const known = PLACE_FEATURES as readonly string[];
+  const freeText = facilities
+    .split(",")
+    .map((item) => item.trim())
+    // a known key typed by hand is taken from the checkboxes instead
+    .filter((item) => item && !known.includes(item));
+  // Only disciplines that exist in the catalogue are stored.
+  const { data: catalogue, error: sportsError } = sports.length
+    ? await supabase.from("sports").select("slug").in("slug", sports)
+    : { data: [] as { slug: string }[], error: null };
+  if (sportsError) return { error: toErrorCode(sportsError) };
   const row = {
     ...rest,
-    facilities: facilities
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
-      .slice(0, 20),
+    facilities: [...new Set([...features, ...freeText])].slice(0, 30),
+    sports: (catalogue ?? []).map((sport) => sport.slug).sort(),
   };
 
   if (id) {
@@ -135,9 +152,7 @@ export async function saveVenueAction(_prev: FormState, formData: FormData): Pro
     const { error } = await supabase.from("venues").insert({ ...row, slug, source: "admin" });
     if (error) return { error: toErrorCode(error) };
   }
-  revalidatePath("/admin/salles");
-  revalidatePath("/salles");
-  revalidatePath("/coachs");
+  for (const path of ["/admin/salles", "/salles", "/clubs", "/street-workout", "/coachs", "/carte", "/"]) revalidatePath(path);
   return { ok: true };
 }
 
@@ -147,8 +162,7 @@ export async function deleteVenueAction(venueId: string): Promise<ActionResult> 
   const { data, error } = await supabase.from("venues").delete().eq("id", venueId).select("id").maybeSingle();
   if (error) return fail(toErrorCode(error));
   if (!data) return fail("forbidden");
-  revalidatePath("/admin/salles");
-  revalidatePath("/salles");
+  for (const path of ["/admin/salles", "/salles", "/clubs", "/street-workout", "/carte", "/"]) revalidatePath(path);
   return ok();
 }
 

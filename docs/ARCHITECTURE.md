@@ -77,7 +77,25 @@ Each one is a SQL function listing the allowed pairs, checked by a trigger on ev
 
 ## Map and location
 
-MapLibre GL renders OpenStreetMap vector tiles served by OpenFreeMap (no key, production use allowed, attribution shown). The style URL is configurable with `NEXT_PUBLIC_MAP_STYLE_URL`. Town search uses the French national address base (Géoplateforme) through `/api/geo`, with a built-in list of launch-area towns as an instant fallback. Distances are haversine distances between real coordinates; the search logic is isolated in `src/lib/search.ts` so it can move to PostGIS when volume requires it.
+MapLibre GL renders OpenStreetMap vector tiles served by OpenFreeMap (no key, production use allowed, attribution shown). The style URL is configurable with `NEXT_PUBLIC_MAP_STYLE_URL`; the default ("liberty") is recoloured at runtime by `applyMapTheme` (`src/components/map/map-theme.ts`), layer by source layer, so the map wears Bold Up's colours without hosting a style.
+
+`MapView` (`src/components/map/map-view.tsx`) is the only component that talks to MapLibre. Pins are React elements rendered through portals into MapLibre markers, so they are real buttons (keyboard, screen readers) styled and animated in CSS: a coach is their portrait ringed in the colour of their first discipline, a place or an event is a tile with its icon and colour. Pins that would overlap are grouped on screen into a counted bubble at each zoom change (greedy, in pixels); people and places never share a bubble and the selected pin always stands alone. `cluster="places"` keeps every coach on their own pin (used by the coach search). Selecting a pin flies the camera to it; `padding` keeps pins clear of floating panels.
+
+Around it: `markers.ts` turns coaches, places and events into pins, `map-preview.tsx` is the card that opens on the map, `HomeMap` is a section map for any mix of the three, `PinMap` shows one location, and `ExploreMap` (`/carte`) is the full-screen experience with layer and discipline filters whose state is mirrored in the URL (`src/lib/explore.ts`). Town search uses the French national address base (Géoplateforme) through `/api/geo`, with a built-in list of launch-area towns as an instant fallback. Distances are haversine distances between real coordinates; the search logic is isolated in `src/lib/search.ts` so it can move to PostGIS when volume requires it.
+
+## Places and events (V2)
+
+Gyms, sports clubs and street workout spots share the `venues` table; `category` tells them apart (`GYM_CATEGORIES` versus `club` and `street_workout` in `src/lib/domain.ts`) and `placeHref` gives each its own route. `sports` lists the disciplines practised, `facilities` holds filterable keys (`PLACE_FEATURES`) or free text, `is_free` and `always_open` describe open-air spots. Events have their own table (`events`): local Paris dates, a kind, an optional discipline, coordinates. Both follow the venue security model: anyone reads published rows, only administrators write.
+
+Filtering stays in `src/lib/search.ts` (`searchVenues`, `searchEvents`), pure and unit-tested; each listing keeps its state in the URL through a small reader/writer pair (`src/components/places/params.ts`, `src/components/events/utils.ts`), like the coach search.
+
+## Design system (V2)
+
+Tokens live in `src/app/globals.css`: neutrals with a violet tint, the flame gradient, volt, gold for verification only. The tone system gives every discipline, place category and event kind a colour: an element with `data-tone="<key>"` exposes `--tone`, `--tone-soft`, `--tone-ink` and `--tone-on` to itself and its children, consumed by the `tone-*` utilities. Components never name a colour.
+
+## Calendar (V2)
+
+`src/lib/calendar.ts` holds the pure date arithmetic (Monday weeks, month grids, clamping to the booking horizon), always on Paris date keys. `SlotPicker` offers the free slots returned by the database in day, week and month views (week by default); `BookingsCalendar` shows a person's sessions the same three ways on `/reservations` and `/pro/agenda`.
 
 ## Internationalisation
 

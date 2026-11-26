@@ -6,17 +6,36 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 /** Top navigation link that knows when it is the current section. */
-export function NavLink({ href, match, children }: { href: string; match?: string; children: ReactNode }) {
+export function NavLink({
+  href,
+  match,
+  featured,
+  className,
+  children,
+}: {
+  href: string;
+  /** Path prefixes that count as "this section" (defaults to the link's own path). */
+  match?: string | string[];
+  /** The map: the one entry that wears the brand gradient. */
+  featured?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
   const pathname = usePathname();
-  const base = match ?? href.split("?")[0] ?? href;
-  const active = pathname === base || pathname.startsWith(`${base}/`);
+  const bases = match ? (Array.isArray(match) ? match : [match]) : [href.split("?")[0] ?? href];
+  const active = bases.some((base) => pathname === base || pathname.startsWith(`${base}/`));
   return (
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
       className={clsx(
-        "press inline-flex h-10 items-center rounded-full px-4 text-[14.5px] font-medium",
-        active ? "bg-sand text-ink" : "text-ink2 hover:bg-sand",
+        "press inline-flex h-10 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[14.5px] font-medium",
+        featured
+          ? "bg-bold font-semibold text-white shadow-glow hover:brightness-110"
+          : active
+            ? "bg-ink text-paper"
+            : "text-ink2 hover:bg-sand",
+        className,
       )}
     >
       {children}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   AtSign,
@@ -129,7 +130,10 @@ export default async function CoachProfilePage({ params, searchParams }: PagePro
       {/* ------------------------------------------------------------ editorial hero */}
       <section className="bg-sand">
         <div className="mx-auto grid max-w-[1320px] gap-0 md:grid-cols-[1.05fr_0.95fr] md:gap-10 md:px-8 md:py-12 lg:gap-16">
-          <div className="relative order-1 aspect-[4/5] max-h-[56dvh] w-full overflow-hidden md:order-2 md:max-h-none md:rounded-[32px]">
+          <div
+            data-tone={coach.sports[0]?.slug ?? "coach"}
+            className="relative order-1 aspect-[4/5] max-h-[56dvh] w-full overflow-hidden md:order-2 md:max-h-none md:rounded-[32px] md:shadow-[10px_10px_0_0_var(--tone)]"
+          >
             <CoachPortrait photoPath={coach.photo_path} name={coach.display_name} eager />
             <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent md:hidden" />
           </div>
@@ -161,9 +165,11 @@ export default async function CoachProfilePage({ params, searchParams }: PagePro
 
             <ul className="mt-5 flex flex-wrap gap-2">
               {coach.sports.map((sport) => (
-                <li key={sport.id} className="inline-flex h-9 items-center gap-2 rounded-full bg-paper px-4 text-[13.5px] font-medium text-ink ring-1 ring-inset ring-line">
-                  <SportIcon icon={sport.icon} size={15} />
-                  {localizedName(sport, locale)}
+                <li key={sport.id} data-tone={sport.slug}>
+                  <Link href={`/coachs?sport=${sport.slug}`} className="tone-soft press inline-flex h-9 items-center gap-2 rounded-full px-4 text-[13.5px] font-semibold hover:brightness-95">
+                    <SportIcon icon={sport.icon} size={15} />
+                    {localizedName(sport, locale)}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -176,7 +182,7 @@ export default async function CoachProfilePage({ params, searchParams }: PagePro
               ) : (
                 <>
                   <span className="hidden lg:block">
-                    <ButtonLink href="#reserver" size="lg">
+                    <ButtonLink href="#reserver" size="lg" variant="accent">
                       {c.book}
                       {minPrice != null ? <span className="font-normal opacity-70">· {c.bookFrom(formatPrice(minPrice, locale))}</span> : null}
                     </ButtonLink>
@@ -343,7 +349,7 @@ export default async function CoachProfilePage({ params, searchParams }: PagePro
                       key={day}
                       className={
                         on
-                          ? "inline-flex h-11 w-14 items-center justify-center rounded-2xl bg-ink text-[13.5px] font-semibold text-paper"
+                          ? "bg-bold inline-flex h-11 w-14 items-center justify-center rounded-2xl text-[13.5px] font-semibold text-white"
                           : "inline-flex h-11 w-14 items-center justify-center rounded-2xl bg-sand text-[13.5px] text-faint line-through"
                       }
                     >

@@ -3,7 +3,7 @@
 | Layer | Command | Needs | Covers |
 |---|---|---|---|
 | Types and lint | `npm run typecheck`, `npm run lint` | nothing | Whole codebase, including translation key parity |
-| Unit | `npm test` | nothing | State machines (compared with the SQL), completion %, search and distance, search URL, pre-check, formatting in Paris time, dictionaries |
+| Unit | `npm test` | nothing | State machines (compared with the SQL), completion %, search and distance, search URL and the V2 filters (availability, place, price sort), calendar arithmetic, place and event filters, the event calendar file, pre-check, formatting in Paris time, dictionaries |
 | Database rules | `npm run test:db` | local PostgreSQL (`psql`, `createdb`) | Permissions, verification workflow, double booking, message privacy, on a throwaway database |
 | End to end | `npm run test:e2e` | Docker + `npm run db:start` | The full multi-role story in a real browser against local Supabase |
 | Build | `npm run build` | env vars | Production build |
@@ -12,6 +12,7 @@
 
 `playwright.config.ts` builds the app into `.next-e2e`, serves it on port 3100 and runs two projects: `desktop` (the story, serial) and `mobile` (responsive checks).
 
+- `marketplace.spec.ts` is the V1 story (eleven journeys); `v2.spec.ts` covers the home search, the live map (pins, bubbles, filters, previews), clubs and street workout, events, and the calendar views. It relies on the seeded demo content (10 clubs, 10 spots, 13 events).
 - `tests/e2e/global-setup.ts` **reseeds the demo scenario** and clears rate-limit counters, so every run starts from the same state.
 - The story creates its own coach and customer with unique e-mails and **deletes them afterwards**.
 - The suite **refuses to run against a hosted project**: it checks that the Supabase URL is local.

@@ -3,12 +3,12 @@ import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { VenueCard } from "@/lib/search";
 
-/** Published venues (gyms, studios…), as cards for lists and the map. */
+/** Every published place (gyms and studios, clubs, street workout spots), as cards for lists and the map. */
 export const listPublicVenues = cache(async (): Promise<VenueCard[]> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("venues")
-    .select("id, slug, name, category, address, postal_code, city, lat, lng, partner_status, claim_status, is_demo, source, photo_path")
+    .select("id, slug, name, category, address, postal_code, city, lat, lng, partner_status, claim_status, is_demo, source, photo_path, sports, facilities, is_free, always_open")
     .eq("is_published", true)
     .order("name");
   if (error) throw new Error(`listPublicVenues: ${error.message}`);
@@ -27,6 +27,10 @@ export const listPublicVenues = cache(async (): Promise<VenueCard[]> => {
     isDemo: row.is_demo,
     source: row.source,
     photoPath: row.photo_path,
+    sports: row.sports,
+    facilities: row.facilities,
+    isFree: row.is_free,
+    alwaysOpen: row.always_open,
     distanceKm: null,
   }));
 });

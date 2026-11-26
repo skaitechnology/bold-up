@@ -36,7 +36,7 @@ export function BookingLauncher({ minPriceCents, autoOpen, ...panel }: PanelProp
             ) : null}
             <p className="truncate text-[12px] text-faint">{t.site.booking.priceNote.split(".")[0]}</p>
           </div>
-          <Button size="lg" onClick={() => setOpen(true)} className="shrink-0 !px-6" data-testid="booking-open">
+          <Button size="lg" variant="accent" onClick={() => setOpen(true)} className="shrink-0 !px-6" data-testid="booking-open">
             {t.site.coach.book}
           </Button>
         </div>

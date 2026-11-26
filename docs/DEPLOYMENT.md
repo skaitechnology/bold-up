@@ -40,7 +40,7 @@ npx vercel env add CRON_SECRET production
 
 ```bash
 npx vercel env pull .env.production.local --environment=production
-ENV_FILE=.env.production.local npm run db:push                     # applies supabase/migrations
+ENV_FILE=.env.production.local npm run db:push -- --yes            # applies supabase/migrations
 ENV_FILE=.env.production.local npm run db:seed -- --allow-remote   # demo scenario + accounts
 ```
 
@@ -86,7 +86,23 @@ A green build is not proof. Check, on the public URL:
 
 ## Later deployments
 
-Schema change: add a file in `supabase/migrations`, then `ENV_FILE=.env.production.local npm run db:push` **before** deploying code that needs it.
+Schema change: add a file in `supabase/migrations`, then `ENV_FILE=.env.production.local npm run db:push -- --yes` **before** deploying code that needs it.
+
+### Deploying V2 over a V1 production
+
+V2 needs two additive migrations and its demo content. In this order:
+
+```bash
+npx vercel env pull .env.production.local --environment=production
+ENV_FILE=.env.production.local npm run db:push -- --yes                  # venue categories, events table
+ENV_FILE=.env.production.local npm run db:seed:places -- --allow-remote  # demo clubs, spots and events
+npx vercel deploy --prod
+rm .env.production.local
+```
+
+`db:seed:places` replaces only its own demo rows: accounts and the passwords already shared stay as they are. Run it again whenever the demo events have drifted into the past (their dates are computed from the day it runs). Because the migrations only add things, rolling the code back to V1 needs no database change.
+
+After deploying, also check on the public URL: `/carte` shows portraits and coloured pins, `/clubs`, `/street-workout` and `/evenements` list their content, and the booking panel opens on the week view.
 
 ## Local development
 

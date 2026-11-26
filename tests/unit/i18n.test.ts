@@ -29,7 +29,7 @@ describe("French and English dictionaries", () => {
   it("are really translated (the two languages differ)", () => {
     const french = new Map(strings(fr));
     // Proper nouns are legitimately identical in both languages.
-    const properNouns = new Set(["site.home.eyebrow", "account.auth.fullNamePlaceholder", "pro.profile.qualificationIssuerPlaceholder"]);
+    const properNouns = new Set(["site.home.eyebrow", "explore.home.eyebrow", "account.auth.fullNamePlaceholder", "pro.profile.qualificationIssuerPlaceholder"]);
     const same = strings(en).filter(([key, value]) => french.get(key) === value && value.length > 14 && !properNouns.has(key));
     expect(same.map(([key]) => key)).toEqual([]);
   });

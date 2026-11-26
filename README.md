@@ -2,11 +2,13 @@
 
 A French marketplace that connects independent sports coaches with people who want to train near home. Launch area: Créteil and the Val-de-Marne.
 
-This repository is the working MVP: real accounts, a real database, a real interactive map. Three roles are implemented end to end:
+This repository is the working product (currently **V2**, see [docs/V2.md](docs/V2.md) and the [changelog](CHANGELOG.md)): real accounts, a real database, a real interactive map. Three roles are implemented end to end:
 
-- **Coach**: signs up in three actions, completes a profile step by step, uploads professional documents, manages availability, answers session requests, chats with clients.
-- **Customer**: browses verified coaches on a list and a map, opens a profile, requests a session on a free slot, follows bookings, saves favourites, chats with the coach.
-- **Administrator**: reviews coach documents, approves or rejects applications, manages venues, users and reference lists.
+- **Coach**: signs up in three actions, completes a profile step by step, uploads professional documents, manages availability, answers session requests, chats with clients, follows sessions on a day / week / month calendar.
+- **Customer**: explores a live map of coaches, clubs, street workout spots, gyms and events; searches coaches by discipline, distance, price, availability and place; opens a profile, requests a session on a free slot (day / week / month views), follows bookings, saves favourites, chats with the coach.
+- **Administrator**: reviews coach documents, approves or rejects applications, manages venues, clubs, street workout spots, events, users and reference lists.
+
+What V2 added: the live map (`/carte`), a home page built around "Trouver mon COACH", sports clubs (`/clubs`), street workout spots (`/street-workout`), sports events (`/evenements`), the three calendar views, and a colourful design system with one colour per discipline.
 
 The interface is available in **French (default) and English**.
 
@@ -38,7 +40,7 @@ npm run dev               # http://localhost:3000
 | Administrator | admin@boldup.test | BoldUP Admin |
 | Coach (to review) | yanis@boldup.test | Yanis Bellamy, awaiting validation: approve him from `/admin` |
 
-All seeded people, documents and two of the venues are fictional and flagged "Démo" in the interface.
+All seeded people, documents, clubs, street workout spots, events and two of the gyms are fictional and flagged "Démo" in the interface. Event dates are computed from the day the seed runs, so there is always something coming up.
 
 ## Commands
 
@@ -51,13 +53,15 @@ All seeded people, documents and two of the venues are fictional and flagged "D�
 | `npm run test:e2e` | End-to-end tests (Playwright) against local Supabase |
 | `npm run test:db` | Database rule tests on plain PostgreSQL |
 | `npm run db:start` · `db:stop` · `db:reset` | Local Supabase lifecycle |
-| `npm run db:seed` | Recreate the demo scenario |
+| `npm run db:seed` | Recreate the whole demo scenario (accounts included) |
+| `npm run db:seed:places` | Refresh only the demo clubs, street workout spots and events (accounts untouched) |
 | `npm run db:push` | Apply migrations to a hosted project (`ENV_FILE=…`) |
 | `npm run db:types` | Regenerate `src/lib/database.types.ts` |
 
 ## Documentation
 
-- [Product specification](docs/PRODUCT_SPEC.md): what the MVP does and does not do
+- [V2: what changed and where](docs/V2.md) (in French) · [Changelog](CHANGELOG.md)
+- [Product specification](docs/PRODUCT_SPEC.md): what the product does and does not do
 - [Architecture](docs/ARCHITECTURE.md): code layout, data model, security model
 - [User journeys](docs/USER_JOURNEYS.md): the eleven journeys and how each is verified
 - [Testing](docs/TESTING.md)

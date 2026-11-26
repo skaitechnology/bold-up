@@ -56,6 +56,20 @@ The official pages on sports.gouv.fr could not be read while this version was bu
 
 Required documents are platform policy, editable by the admin (default: professional sports educator card and professional liability insurance; diploma, business registration and others are optional). They are not a statement that the law requires the same in every case: a diploma does not authorise every discipline, and the admin screen says so.
 
+## Added in V2
+
+After the first demo the client asked for a product that feels alive. V2 adds, without removing anything:
+
+- **A live map as an experience of its own** (`/carte`): about half of the customer experience. Coaches with their portrait, clubs, street workout spots, gyms and events, each with its own pin; grouping, animated selection, previews in place, quick filters.
+- **A home page that asks one question**, "Trouver mon COACH": the magnifier opens disciplines and filters; events sit right under it.
+- **More ways to search coaches**: availability, where the session takes place, sort by price.
+- **A calendar in three views** (day, week, month; week first) for booking and for following sessions.
+- **Sports clubs and street workout spots** as their own categories, with their own filters and pages.
+- **Sports events**: HYROX, marathons, trails, competitions, challenges, local events.
+- **A colourful identity**: one colour per discipline, a flame gradient for key actions, micro-interactions.
+
+What V2 still does not claim: clubs, spots and events are demonstration content until real data is imported; the map shows no live presence; events cannot be booked through Bold Up. Details in [V2.md](V2.md).
+
 ## Deliberately not in this version
 
 Online payment and payouts, subscriptions for coaches, reviews and ratings, loyalty and partner discounts, shops and training schools as full categories, nutrition and training tracking, real OCR or AI document analysis, group class capacity, a native app. See [ROADMAP.md](ROADMAP.md). Prices are shown for information; the app never says a payment was collected.

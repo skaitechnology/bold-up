@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { respondBookingAction } from "@/lib/actions/bookings";
 import { contactCoachAction } from "@/lib/actions/messages";
+import { bookingAnchor } from "@/lib/calendar";
 import type { BookingView } from "@/lib/data/bookings";
 import { bookingActions, type BookingAction, type BookingStatus } from "@/lib/domain";
 import { TIME_ZONE, formatDateTimeCompact, formatDuration, formatPrice, formatTime } from "@/lib/format";
@@ -63,12 +64,23 @@ export function BookingCard({ booking, as }: { booking: BookingView; as: "coach"
 
   return (
     <article
-      className={clsx("rounded-[24px] border border-line bg-paper p-4 md:p-5", dimmed && "opacity-70")}
+      id={bookingAnchor(booking.id)}
+      className={clsx(
+        "scroll-mt-28 rounded-[24px] border border-line bg-paper p-4 transition-shadow duration-300 hover:shadow-card md:p-5",
+        // reached from the calendar: the card it points to stands out
+        "target:border-flame target:shadow-lift target:ring-2 target:ring-flame/35",
+        dimmed && "opacity-70",
+      )}
       data-testid="booking-card"
       data-status={booking.status}
     >
       <div className="flex gap-4">
-        <div className={clsx("flex h-[76px] w-[64px] shrink-0 flex-col items-center justify-center rounded-2xl", past || dimmed ? "bg-sand text-muted" : "bg-ink text-paper")}>
+        <div
+          className={clsx(
+            "flex h-[76px] w-[64px] shrink-0 flex-col items-center justify-center rounded-2xl",
+            past || dimmed ? "bg-sand text-muted" : booking.status === "accepted" ? "bg-bold text-white" : "bg-ink text-paper",
+          )}
+        >
           <span className="text-[11px] font-medium uppercase tracking-wide opacity-80">{part({ weekday: "short" }).replace(".", "")}</span>
           <span className="text-[24px] font-semibold leading-none tabular">{part({ day: "numeric" })}</span>
           <span className="mt-0.5 text-[11px] font-medium uppercase tracking-wide opacity-80">{part({ month: "short" }).replace(".", "")}</span>
@@ -142,7 +154,7 @@ export function BookingCard({ booking, as }: { booking: BookingView; as: "coach"
               <Button
                 key={action}
                 size="sm"
-                variant={action === "accept" || action === "complete" ? "primary" : "secondary"}
+                variant={action === "accept" ? "accent" : action === "complete" ? "primary" : "secondary"}
                 icon={action === "accept" || action === "complete" ? Check : X}
                 loading={pending && !needsConfirm(action)}
                 onClick={() => (needsConfirm(action) ? setConfirming(action) : run(action))}

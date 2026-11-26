@@ -3,7 +3,7 @@ import { clsx } from "clsx";
 import { LoaderCircle, type LucideIcon } from "lucide-react";
 import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "inverse" | "outline-inverse" | "danger";
+export type ButtonVariant = "primary" | "accent" | "volt" | "secondary" | "ghost" | "inverse" | "outline-inverse" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 type StyleProps = { variant?: ButtonVariant; size?: ButtonSize; block?: boolean; className?: string };
@@ -15,7 +15,10 @@ export function buttonClass({ variant = "primary", size = "md", block, className
     size === "sm" && "h-9 px-4 text-[13px]",
     size === "md" && "h-11 px-5 text-[14.5px]",
     size === "lg" && "h-[52px] px-7 text-[15.5px]",
-    variant === "primary" && "bg-ink text-paper hover:bg-ink/88",
+    variant === "primary" && "bg-ink text-paper hover:bg-ink3",
+    // the brand call to action: flame gradient, glows on hover
+    variant === "accent" && "bg-bold text-white shadow-glow hover:brightness-110 disabled:shadow-none",
+    variant === "volt" && "bg-volt text-volt-ink hover:brightness-95",
     variant === "secondary" && "border border-line2 bg-paper text-ink hover:border-ink",
     variant === "ghost" && "text-ink hover:bg-sand",
     variant === "inverse" && "bg-paper text-ink hover:bg-sand",

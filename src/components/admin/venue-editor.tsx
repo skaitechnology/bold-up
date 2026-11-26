@@ -6,11 +6,12 @@ import { useRef, useState } from "react";
 import type { GeoResult } from "@/app/api/geo/route";
 import { ActionForm, SubmitButton } from "@/components/ui/action-form";
 import { Button } from "@/components/ui/button";
-import { Field, Input, Select, Switch, Textarea } from "@/components/ui/field";
+import { ChoiceChip, Field, Input, Select, Switch, Textarea } from "@/components/ui/field";
 import { Sheet } from "@/components/ui/sheet";
 import { toast } from "@/components/ui/toast";
 import { saveVenueAction } from "@/lib/actions/venues";
-import { VENUE_CATEGORIES } from "@/lib/domain";
+import { CLUB_FEATURES, isPlaceFeature, SPOT_FEATURES, VENUE_CATEGORIES } from "@/lib/domain";
+import { localizedName } from "@/lib/i18n";
 import { useI18n } from "@/lib/i18n/client";
 
 export type EditableVenue = {
@@ -26,17 +27,33 @@ export type EditableVenue = {
   phone: string | null;
   website: string | null;
   facilities: string[];
+  sports: string[];
+  is_free: boolean;
+  always_open: boolean;
   partner_status: string;
   claim_status: string;
   is_published: boolean;
 };
 
-/** Create or edit a venue. "Locate" turns the typed address into coordinates (national address base). */
-export function VenueEditor({ venue }: { venue?: EditableVenue }) {
-  const { t } = useI18n();
+export type SportOption = { slug: string; name_fr: string; name_en: string };
+
+/**
+ * Create or edit a place: a gym or studio, a sports club, or a street workout spot.
+ * The category decides which extra fields are offered (disciplines and audiences for a
+ * club, equipment for a spot). "Locate" turns the typed address into coordinates
+ * (national address base).
+ */
+export function VenueEditor({ venue, sports, defaultCategory = "gym" }: { venue?: EditableVenue; sports: SportOption[]; defaultCategory?: string }) {
+  const { t, locale } = useI18n();
   const v = t.admin.venues;
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [category, setCategory] = useState(venue?.category ?? defaultCategory);
+  const isSpot = category === "street_workout";
+  const isClub = category === "club";
+  const featureOptions = isSpot ? SPOT_FEATURES : isClub ? CLUB_FEATURES : [];
+  // Facilities are stored together: known keys are ticked below, the rest stays free text.
+  const freeText = venue?.facilities.filter((item) => !isPlaceFeature(item)) ?? [];
   const [locating, setLocating] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -105,7 +122,7 @@ export function VenueEditor({ venue }: { venue?: EditableVenue }) {
                 <Input name="name" required minLength={2} maxLength={120} defaultValue={venue?.name} />
               </Field>
               <Field label={v.category}>
-                <Select name="category" defaultValue={venue?.category ?? "gym"}>
+                <Select name="category" value={category} onChange={(event) => setCategory(event.target.value)} data-testid="venue-category">
                   {VENUE_CATEGORIES.map((category) => (
                     <option key={category} value={category}>
                       {t.common.venueCategories[category]}
@@ -147,9 +164,38 @@ export function VenueEditor({ venue }: { venue?: EditableVenue }) {
                 <Input name="website" type="url" maxLength={200} defaultValue={venue?.website ?? ""} placeholder="https://" />
               </Field>
             </div>
+            {!isSpot ? (
+              <fieldset>
+                <legend className="mb-1 text-[13.5px] font-medium text-ink">{v.sports}</legend>
+                <p className="mb-2.5 text-[12.5px] leading-snug text-muted">{v.sportsHint}</p>
+                <div className="flex flex-wrap gap-2">
+                  {sports.map((sport) => (
+                    <ChoiceChip key={sport.slug} name="sports" value={sport.slug} defaultChecked={venue?.sports.includes(sport.slug)}>
+                      {localizedName(sport, locale)}
+                    </ChoiceChip>
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
+            {featureOptions.length ? (
+              <fieldset>
+                <legend className="mb-2.5 text-[13.5px] font-medium text-ink">{isSpot ? v.spotFeatures : v.clubFeatures}</legend>
+                <div className="flex flex-wrap gap-2">
+                  {featureOptions.map((feature) => (
+                    <ChoiceChip key={feature} name="features" value={feature} defaultChecked={venue?.facilities.includes(feature)}>
+                      {t.places.features[feature]}
+                    </ChoiceChip>
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
             <Field label={v.facilities} hint={v.facilitiesHint} optional={t.common.optional}>
-              <Input name="facilities" maxLength={600} defaultValue={venue?.facilities.join(", ") ?? ""} />
+              <Input name="facilities" maxLength={600} defaultValue={freeText.join(", ")} />
             </Field>
+            <div className="divide-y divide-line rounded-2xl border border-line px-4 py-1">
+              <Switch name="is_free" defaultChecked={venue?.is_free ?? isSpot} label={v.isFree} description={v.isFreeHint} />
+              <Switch name="always_open" defaultChecked={venue?.always_open ?? false} label={v.alwaysOpen} description={v.alwaysOpenHint} />
+            </div>
             <div className="divide-y divide-line rounded-2xl border border-line px-4 py-1">
               <Switch name="partner_status" defaultChecked={venue?.partner_status === "partner"} label={v.partner} description={v.partnerHint} />
               <Switch name="claim_status" defaultChecked={venue?.claim_status === "claimed"} label={v.claimed} />

@@ -21,6 +21,7 @@ import type { Database } from "../src/lib/database.types";
 import { findCommune, jitter } from "../src/lib/geo";
 import { PRECHECK_ENGINE } from "../src/lib/verification/checks";
 import { demoPdf } from "./lib/demo-pdf";
+import { seedPlacesAndEvents } from "./lib/demo-places";
 
 const root = path.resolve(__dirname, "..");
 loadEnv({ path: path.join(root, process.env.ENV_FILE ?? ".env.local"), quiet: true });
@@ -742,6 +743,8 @@ async function main() {
 
   const venueCount = await seedVenues();
   console.log(`  ${venueCount} venues`);
+  const extra = await seedPlacesAndEvents(db);
+  console.log(`  ${extra.clubs} clubs, ${extra.spots} street workout spots, ${extra.events} events`);
 
   const lines = [
     "# BOLD UP — demo accounts",

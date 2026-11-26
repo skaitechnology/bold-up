@@ -1,6 +1,6 @@
 {
   "name": "bold-up",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
@@ -15,6 +15,7 @@
     "db:reset": "supabase db reset",
     "db:push": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "db:seed:places": "tsx scripts/seed-places.ts",
     "db:bootstrap-admin": "tsx scripts/bootstrap-admin.ts",
     "test:db": "bash scripts/test-db.sh",
     "db:types": "supabase gen types typescript --local > src/lib/database.types.ts"

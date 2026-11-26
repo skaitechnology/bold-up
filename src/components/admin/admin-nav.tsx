@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { clsx } from "clsx";
-import { Building2, LayoutDashboard, Settings, UserCheck, Users, type LucideIcon } from "lucide-react";
+import { Building2, CalendarDays, LayoutDashboard, Settings, UserCheck, Users, type LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/client";
 
@@ -15,6 +15,7 @@ export function AdminNav({ pending, orientation }: { pending: number; orientatio
     { href: "/admin", label: nav.dashboard, icon: LayoutDashboard, exact: true },
     { href: "/admin/coachs", label: nav.coaches, icon: UserCheck, badge: pending },
     { href: "/admin/salles", label: nav.venues, icon: Building2 },
+    { href: "/admin/evenements", label: t.events.admin.nav, icon: CalendarDays },
     { href: "/admin/utilisateurs", label: nav.users, icon: Users },
     { href: "/admin/reglages", label: nav.settings, icon: Settings },
   ];

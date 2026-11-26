@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArrowLeft, Building2, Globe, Info, MapPin, Navigation, Phone, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { CoachCard } from "@/components/coach/coach-card";
@@ -13,6 +13,7 @@ import { venueInquiryAction } from "@/lib/actions/venues";
 import { getSessionUser } from "@/lib/auth/session";
 import { getFavoriteCoachIds, listPublicCoaches } from "@/lib/data/coaches";
 import { getVenueBySlug } from "@/lib/data/venues";
+import { isGymCategory, placeHref } from "@/lib/domain";
 import { getI18n } from "@/lib/i18n/server";
 import { mediaUrl } from "@/lib/media";
 import { searchCoaches } from "@/lib/search";
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${venue.name} — ${t.common.venueCategories[venue.category]}${venue.city ? ` · ${venue.city}` : ""}`,
     description: venue.description || t.site.venues.metaDescription,
-    alternates: { canonical: `/salle/${venue.slug}` },
+    alternates: { canonical: placeHref(venue) },
   };
 }
 
@@ -34,6 +35,8 @@ export default async function VenuePage({ params }: PageProps) {
   const { slug } = await params;
   const [venue, { t, locale }, user, allCoaches] = await Promise.all([getVenueBySlug(slug), getI18n(), getSessionUser(), listPublicCoaches()]);
   if (!venue) notFound();
+  // Clubs and street workout spots live under their own routes.
+  if (!isGymCategory(venue.category)) permanentRedirect(placeHref(venue));
   const v = t.site.venues;
   const partner = venue.partner_status === "partner";
   const claimed = venue.claim_status === "claimed";

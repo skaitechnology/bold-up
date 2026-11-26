@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { ShieldCheck, type LucideIcon } from "lucide-react";
 import type { HTMLAttributes, ReactNode } from "react";
 
-export type BadgeTone = "neutral" | "ink" | "gold" | "success" | "warn" | "danger" | "outline" | "glass";
+export type BadgeTone = "neutral" | "ink" | "gold" | "success" | "warn" | "danger" | "outline" | "glass" | "tone" | "tone-solid";
 
 export function Badge({
   tone = "neutral",
@@ -32,6 +32,9 @@ export function Badge({
         tone === "danger" && "bg-danger-soft text-danger",
         tone === "outline" && "border border-line2 text-ink2",
         tone === "glass" && "bg-white/14 text-white ring-1 ring-inset ring-white/25 backdrop-blur",
+        // coloured by the nearest data-tone (set it on the badge itself with the `data-tone` prop)
+        tone === "tone" && "tone-soft",
+        tone === "tone-solid" && "tone-solid",
         className,
       )}
     >

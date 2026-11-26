@@ -1,6 +1,14 @@
 # Roadmap
 
-What exists today is the core loop: a coach gets verified and published, a customer finds them and requests a session. Everything below is deliberately left out of the MVP.
+What exists today is the core loop (a coach gets verified and published, a customer finds them and requests a session) plus, since V2, the live map, clubs, street workout spots, events and the three calendar views. Everything below is deliberately left out so far.
+
+## Right after V2
+
+1. **Real data for clubs, street workout spots and events.** Import clubs and outdoor fitness stations from OpenStreetMap (as was done for gyms), and enter or feed real events. Today they are demonstration content.
+2. **Photos** for clubs, spots and events (`photo_path` exists; pages use a coloured cover until then).
+3. **Favourites and reminders** for places and events; "I'm going" on an event.
+4. **Opt-in live presence on the map** (who trains where, now). It is what would bring the map closest to a social map; it needs consent, privacy rules and moderation before any code.
+5. **Coaches attached to clubs and spots**: "trains here", sessions offered at a given spot.
 
 ## Next (after the first real coaches)
 
@@ -14,7 +22,7 @@ What exists today is the core loop: a coach gets verified and published, a custo
 
 - Venue claim flow with verification of the manager, enhanced partner pages (photos, facilities, coach-friendly time slots).
 - Session spaces: a coach picks a partner venue when accepting a request.
-- Shops, training schools and online businesses as directory categories (the `venues.category` field already allows `shop` and `school`).
+- Shops, training schools and online businesses as directory categories (the `venues.category` field already allows `shop` and `school`; clubs and street workout spots shipped in V2).
 - Partner offers. Not before signed agreements exist: nothing is invented in the product.
 
 ## Revenue

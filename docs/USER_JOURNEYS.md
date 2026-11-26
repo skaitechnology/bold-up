@@ -16,6 +16,16 @@ The eleven journeys of the MVP, and where each is verified. "E2E" refers to `tes
 | 10 | Responsive | Home, search, coach profile and booking sheet, coach area, admin review, sign-up and customer screens on a phone. | `tests/e2e/mobile.spec.ts`: no horizontal overflow, key controls reachable |
 | 11 | Security | A coach cannot approve themselves, a customer cannot edit a coach, a coach cannot read another coach's documents, non-admins get 404 on `/admin`, admins cannot read messages. | E2E journey 11 (through the API, bypassing the interface) and `tests/db/test.sql` |
 
+## V2 journeys
+
+| # | Journey | What happens | How it is verified |
+|---|---|---|---|
+| 12 | Home search | "Trouver mon COACH": the magnifier opens the ten disciplines with their icons and the filters; the choices arrive in the results URL. Events are the section right under the hero. | `tests/e2e/v2.spec.ts` (home) |
+| 13 | Live map | Coach portraits, coloured pins, bubbles that open on click, layer and discipline filters, a preview that opens on the map and leads to the right page. | `tests/e2e/v2.spec.ts` (map) |
+| 14 | Clubs and street workout | Each listing filters with its own criteria; each place has its page; a club or spot opened under `/salle/` goes to its own route. | `tests/e2e/v2.spec.ts` (places), `tests/unit/places.test.ts` |
+| 15 | Events | Upcoming events only, filters by type, a detail page that says demo content is fictional, a calendar file. | `tests/e2e/v2.spec.ts` (events), `tests/unit/events.test.ts` |
+| 16 | Calendar | Week view first when choosing a slot; day and month one tap away; the customer sees their sessions on the same calendar. | `tests/e2e/v2.spec.ts` (calendar), `tests/unit/calendar.test.ts` |
+
 ## Trying them by hand
 
 1. `npm run db:seed`, then open `.demo-credentials.md` for the passwords.
@@ -24,3 +34,5 @@ The eleven journeys of the MVP, and where each is verified. "E2E" refers to `tes
 4. **As Camille** (`camille@boldup.test`): open Alexandre Moreau, pick a slot, request a session, write to him.
 5. **As Alexandre** (`alexandre@boldup.test`): accept the request in "Demandes", reply in "Messages", change a price in "Mon profil".
 6. Create your own coach account from `/inscription` to see the empty dashboard and the checklist fill up.
+7. **The map** (`/carte`): click a counted bubble, then a coach portrait; try the "Street Workout" and "Évènements" filters and the 3D view.
+8. **Clubs, street workout, events**: filter each listing, open a page, download an event's calendar file.

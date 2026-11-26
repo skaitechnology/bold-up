@@ -249,8 +249,11 @@ test("journey 4b — the coach sees the decision on their dashboard", async ({ p
 
 test("journey 5 — a visitor finds boxing coaches near Créteil on the list and the map", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("h1")).toHaveText("Trouvez le coach qui vous correspond.");
-  await page.getByTestId("home-sport").selectOption("boxe");
+  await expect(page.locator("h1")).toHaveText("Trouver mon COACH");
+  // the magnifier opens the search in place: disciplines with their icons, then the filters
+  await page.getByTestId("home-search-open").click();
+  await expect(page.getByTestId("home-finder")).toBeVisible();
+  await page.getByTestId("home-sport-boxe").click();
   await page.getByTestId("home-search").click();
   await page.waitForURL(/\/coachs\?sport=boxe/);
 
@@ -264,7 +267,8 @@ test("journey 5 — a visitor finds boxing coaches near Créteil on the list and
   // a real map: one pin per coach in the results, at their coordinates
   await expect(page.getByTestId("map")).toHaveAttribute("data-ready", "true", { timeout: 30_000 });
   await expect(page.locator('.bu-pin[data-kind="coach"]')).toHaveCount(3);
-  expect(await page.locator('.bu-pin[data-kind="venue"]').count()).toBeGreaterThan(3);
+  // gyms are there too, on their own or grouped in a bubble when they would overlap
+  expect(await page.locator('.bu-pin[data-kind="venue"], .bu-cluster').count()).toBeGreaterThan(3);
 
   // distance filter uses real coordinates: 2 km around Créteil keeps the two Créteil coaches
   const radius = page.locator('[data-testid="filter-radius"]:visible');
@@ -493,7 +497,7 @@ test("the interface is available in French and in English", async ({ page }) => 
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");
   await page.getByRole("banner").getByRole("button", { name: "en", exact: true }).click();
-  await expect(page.locator("h1")).toHaveText("Find the coach who fits you.");
+  await expect(page.locator("h1")).toHaveText("Find my COACH");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.goto(`/coach/${state.slug}`);
   await expect(page.getByText("Profile verified by Bold Up")).toBeVisible();
