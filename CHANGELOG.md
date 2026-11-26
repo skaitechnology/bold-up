@@ -4,6 +4,8 @@
 
 Built from the client's feedback on the first demo. Nothing from 0.1.0 was removed. Full description (in French): [docs/V2.md](docs/V2.md).
 
+Deployed to production (https://bold-up.vercel.app) on 2026-11-26 from the `v2` branch.
+
 ### Added
 
 - **Live map** at `/carte`: coach portraits as pins ringed in their discipline colour, one shape and colour per kind of place, dated event pins, counted bubbles that open on click, selection animations, previews that open on the map, quick layer and discipline filters, a "nearby" rail, 3D view.
